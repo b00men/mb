@@ -1,0 +1,180 @@
+<% skin %>
+
+<% view base_thread uses data::thread_shared  extends master %>
+
+<% template msg_header(data::msg &m) %>
+<a name="p<%= m.msg_id %>"></a><span class="author"><%= m.author %></span>
+<%= m.date %>
+<% if (false) %>
+<a href="javascript:insert('&gt;&gt;<%= m.msg_id %> ')">No.<%= m.msg_id %></a> | 
+<a href="<% url "/comment" using m.msg_id %>"><% gt "Reply" %></a>
+<% else %>
+No.<%= m.msg_id %>
+<a href="javascript:insert('&gt;&gt;<%= m.msg_id %> ')"><% gt "Reply" %></a>
+<% end %>
+<% end %>
+
+<% template msg_cnt(data::msg  &m) %>
+<%= m.content | ext text2html %>
+<% end %>
+
+<% template msg(data::msg &m) %>
+<tr><td>
+<div class="post_flat">
+<div class="post_title">
+<% include msg_header(m) %>
+</div>
+<% if (!(m.file=="")) %>
+<div class="file">
+<a href="../media/uploads/<%= m.tid %>_<%= m.msg_id %>.<%= m.file %>" target="_blank">
+<% if ((m.file=="png")||(m.file=="gif")||(m.file=="jpg")) %>
+<img src="../media/uploads/<%= m.tid %>_<%= m.msg_id %>.<%= m.file %>" max-width=10% alt="File(<%= m.file %>)" title="Uploaded file" />
+<% else %>
+<img src="../media/images/<%= m.file %>.png" width="48" high="48" alt="File(<%= m.file %>)" title="Uploaded file" />
+<% end %>
+</a>
+</div>
+<% end %>
+<div class="comment">
+<% include msg_cnt(m) %>
+</div></div></td></tr>
+<% end %>
+
+<% template title() %><% gt "Disussion: {1}" using title %><% end template %>
+
+<% template links() %>
+<% include master::links() %>
+       
+               <% if (false) %>
+               | <a href="<% url "/flat_thread" using thread_id %>"><% gt "Flat View"%></a> |
+                 <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
+               <% end %>
+        
+<% end %>
+
+<% end view %>
+
+
+<% view flat_thread uses data::flat_thread  extends base_thread %>
+
+<% template postform() %>
+        <div class="forms">
+        <form id="postform" action="" method="post" enctype="multipart/form-data" ><% csrf %>
+        <table>
+                <% form as_table form.author %>
+                <% form as_table form.comment %>
+                <% form as_table form.image %>
+                <% form as_table form.send %>
+        </table>
+        </form>
+        <% include master::note() %>
+        </div>
+<% end template %>
+
+
+<% template body() %>
+		<% include postform() %>
+        <% foreach message in messages %>
+                <table>
+                <% item %><% include msg(message) %><% end %>
+                </table>
+        <% empty %>
+                <span class="title"><h2><% gt "There are no comments." %></h2></span>
+        <% end %>
+<% end template %>
+
+<% end view %>
+
+
+<% view tree_thread uses data::tree_thread  extends base_thread %>
+
+<% template display(data::tree_t &tree) %>
+
+        <% foreach message in tree %>
+                
+                
+                <% item %>
+                <div class="post">
+				                
+				                <div class="post_title">
+								<% include msg_header(message.second) %>
+								</div>
+
+								<% if (!(message.second.file=="")) %>
+								<div class="file_t">
+								<a href="../media/uploads/<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" target="_blank">
+								<% if ((message.second.file=="png")||(message.second.file=="gif")||(message.second.file=="jpg")) %>
+								<img src="../media/uploads/<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" alt="File(<%= message.second.file %>)" title="Uploaded file" />
+								<% else %>
+								<img src="../media/images/<%= message.second.file %>.png" width="48" high="48" alt="File(<%= message.second.file %>)" title="Uploaded file" />
+								<% end %>
+								</a>
+								</div>
+								<% end %>
+								
+                                <div class="comment">
+								<% include msg_cnt(message.second) %>
+								</div>
+								</div>
+								<div class="reply">
+                                <% include display(message.second.repl) %>
+                                </div>
+                <% end %>
+                
+                
+        <% end %>
+<% end template %>
+
+<% template body() %>
+        <% if empty messages %>
+                <span class="title"><h2><% gt "There are no comments." %></h2></span>
+        <% else %>
+        
+                <% include display(messages) %>
+        
+        <% end %>
+<% end template %>
+
+<% end view %>
+
+
+<% view reply uses data::reply extends master %>
+
+<% template title() %><% gt "Comment to thread: {1}" using title %><% end %>
+
+<% template links() %>
+        <% include master::links() %>
+        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Back to thread" %></a>
+<% end %>
+
+<% template body() %>
+        <% if not empty content %>
+        		<center><table><tr><td>
+                <div class="post_flat">
+                		<div class="post_title">
+                        <span class="author"><%= author %></span>
+<%= date %> No.<%= msg_id %>
+                        </div>
+                        <div class="comment">
+                        <%= content | ext text2html %>
+                        </div>
+                </div>
+                </td><tr></table></center>
+        <% end %>
+        <div class="forms">
+        <form action="" method="post" enctype="multipart/form-data" ><% csrf %>
+        <table>
+                <% form as_table form.author %>
+                <% form as_table form.comment %>
+                <% form as_table form.image %>
+                <% form as_table form.send %>
+        </table>
+        </form>
+        <% include master::note() %>
+        </div>
+<% end template %>
+
+<% end view %>
+
+
+<% end skin %>

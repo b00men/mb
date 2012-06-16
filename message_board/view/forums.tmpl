@@ -1,0 +1,38 @@
+<% skin %>
+<% view forums uses data::forums  extends master %>
+<% template body() %>
+        <% foreach topic in topics %>
+        		<div class="topics">
+                <ul>
+                <% item %>
+                <li><a href="<% url "/user_thread" using topic.id %>"><%= topic.title %></a></li>
+                <% end %>
+                </ul>
+                </div>
+        <% empty %>
+                <h2><% gt "No Topics" %></h2>
+        <% end %>
+        <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
+        <div class="forms">
+        <form action="<% url "/forums" %>" method="post" enctype="multipart/form-data" ><% csrf script %>
+        <table>
+        <% form as_table form %>
+        </table>
+        </form>
+        <% include master::note() %>
+        </div>
+<% end template %>
+
+<% template links() %>
+        <% include master::links() %>
+        <% if next %>
+        <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
+        <% end %>
+        <% if prevneg %>
+        <a href="<% url "/forums" using prev  %>"><% gt "Prev Page" %></a>
+        <% end %>
+<% end template %>
+
+
+<% end view %>
+<% end skin %>
