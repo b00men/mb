@@ -1,17 +1,27 @@
 <% skin %>
 <% view forums uses data::forums  extends master %>
 <% template body() %>
+        <span class="title"><h2><% gt "List of Disussion" %></h2></span>
         <% foreach topic in topics %>
         		<div class="topics">
-                <ul>
+                <table width=100%>
+                <tr>
+                <td align=left><% gt "Thread" %></td>
+                <td align=right><% gt "Last Post" %></td>
+                </tr>
+                <tr><td colspan=2><hr></td></tr>
                 <% item %>
-                <li><a href="<% url "/user_thread" using topic.id %>"><%= topic.title %></a></li>
+                <tr>
+                <td align=left><a href="<% url "/user_thread" using topic.id %>"><%= topic.title %></a></td>
+                <td align=right><%= topic.date %></td>
+                </tr>
                 <% end %>
-                </ul>
+                </table>
                 </div>
         <% empty %>
                 <h2><% gt "No Topics" %></h2>
         <% end %>
+        <br />
         <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
         <div class="forms">
         <form action="<% url "/forums" %>" method="post" enctype="multipart/form-data" ><% csrf script %>
@@ -21,15 +31,16 @@
         </form>
         <% include master::note() %>
         </div>
+        <br />
 <% end template %>
 
 <% template links() %>
         <% include master::links() %>
         <% if next %>
-        <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
+        | <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
         <% end %>
         <% if prevneg %>
-        <a href="<% url "/forums" using prev  %>"><% gt "Prev Page" %></a>
+        | <a href="<% url "/forums" using prev  %>"><% gt "Prev Page" %></a>
         <% end %>
 <% end template %>
 

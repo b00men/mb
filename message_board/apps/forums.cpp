@@ -17,7 +17,7 @@ new_topic_form::new_topic_form()
         author.message(translate("Author"));
         author.value(translate("Anon"));
         author.limits(1,64);
-        comment.message(translate("Comment"));
+        comment.message(translate("Message"));
         //comment.attributes_string(" cols=60 rows=6 ");
         comment.rows(6);
         comment.cols(60);
@@ -52,16 +52,16 @@ void forums::prepare_content(data::forums &c,std::string const &page)
         
         cppdb::result r;
 
-        r=sql<< "SELECT id,title "
+        r=sql<< "SELECT id,title,date "
                 "FROM threads "
-                "ORDER BY id DESC "
+                "ORDER BY date DESC "
                 "LIMIT ?,?" << offset*topics_per_page << topics_per_page;
         
         c.topics.reserve(topics_per_page);      
         
         for(int i=0;r.next();i++) {
                 c.topics.resize(c.topics.size()+1);
-                r>>c.topics[i].id>>c.topics[i].title;
+                r>>c.topics[i].id>>c.topics[i].title>>c.topics[i].date;
         }
         if(c.topics.size()==topics_per_page) {
                 c.next=offset+1;
@@ -151,13 +151,19 @@ void forums::prepare(std::string page)
         }
         else {
                 std::string key = "main_page_" + page;
+                
+                // It's very bad idea. Cache must be used.
+                // See apps/threads.cpp where have "POST" and vailidate form.
+                data::forums c;
+                prepare_content(c,page);
+
                 if(cache().fetch_page(key))
                         return;
                 // Add some shared key for all main_page_
                 cache().add_trigger("new_thread");
                 
-                data::forums c;
-                prepare_content(c,page);
+                //data::forums c;
+                //prepare_content(c,page);
 
                 cache().store_page(key);
 

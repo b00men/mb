@@ -2,31 +2,16 @@ body{
 	background-color: rgb(238, 238, 238);
 	color: rgb(50, 50, 50);
 }
+
 #page {
-        /*width:750px;*/
+        max-width:900px;
         margin:20px auto;
         padding-left:10px;
         padding-right:10px;
 }
 
-#links, .forms table{
-        /*width:180px;*/
+#links, .forms table, .topics table{
         padding: 10px;
-}
-
-#body {
-        /*width:540px;
-        color:rgb(55,55,90);*/
-        
-}
-
-/*dt {
-		color:rgb(200,200,200);
-}
-*/
-.author {
-		color:rgb(17,119,67);
-		font-weight:bold;		
 }
 
 .comment{
@@ -35,9 +20,7 @@ body{
 	padding: 0px 20px;
 }
 
-
-.reply{
-	
+.reply{ /*Tabs for tree view*/
 	padding: 0px 0px 0px 20px;
 }
 
@@ -47,31 +30,11 @@ body{
     border-width: 1px;
     background-color: rgb(255, 255, 255);
     border-color: rgb(221, 221, 221);
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;  
 }
 
-pre {
-	margin: 0px 0px 12px 0px;
-	padding: 5px 5px 5px 8px;
-	border-style: none;
-	background-color: rgb(245, 245, 245);
-}
-
-blockquote {
-	border-style: none;
-	background-color: rgb(241, 245, 233);
-}
-
-blockquote p{
-	color: rgb(102, 117, 46);
-	padding: 0px 10px 0px 20px;
-	background-image:url("/media/images/qt.png");
-	background-repeat: repeat-y;
-	background-position: 0px top;
-}
-
-.post{
-	margin: 10px auto;
+.forms, .topics{
+	width:600px;
 }
 
 .file img,.file_t img { /*Костыль до создания ресайза на imagemagick*/
@@ -88,10 +51,6 @@ blockquote p{
 	margin: 5px 20px 0px 20px;
 }
 
-.topics,.forms {
-	max-width: 600px;
-}
-
 .title {
 	text-align: center;
 	text-shadow: 3px 3px 8px rgb(200, 200, 200);
@@ -102,13 +61,46 @@ blockquote p{
 	padding: 0px 40px 10px 20px;
 }
 
+pre {
+	margin: 0px 0px 12px 0px;
+	padding: 5px 5px 5px 8px;
+	border-style: none;
+	background-color: rgb(245, 245, 245);
+}
+
+blockquote {
+	border-style: none;
+	background-color: rgb(241, 245, 233);
+	color: rgb(102, 117, 46);
+}
+
+blockquote p{
+	padding: 0px 10px 0px 20px;
+	background-image:url("/media/images/qt.png");
+	background-repeat: repeat-y;
+	background-position: 0px top;
+}
+
+blockquote pre {
+	background-color: rgb(226, 230, 218);
+}
+
 .spoiler{
 	background: none repeat scroll 0% 0% rgb(200, 200, 200);
 	color: rgb(200, 200, 200);
+}
+
+.spoiler:hover{
+	color: rgb(0, 0, 0);
 }
 
 a{
 	text-decoration: none;
 	font-weight: bold;
 	color: rgb(37, 103, 173);
+}
+
+.author {
+		color:rgb(17,119,67);
+		font-weight:bold;		
 }

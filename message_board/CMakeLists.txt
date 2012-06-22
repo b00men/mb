@@ -46,7 +46,6 @@ set(MB_SRC
         apps/mb.cpp
         apps/main.cpp)
 
-set(MB_LANG he)
 set(MB_LANG ru)
 
 # Actual Build

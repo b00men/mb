@@ -3,16 +3,31 @@ drop table if exists threads;
 drop table if exists messages;
 
 create table threads (
-    id integer primary key autoincrement not null,
-    title varchar(256) not null
-);
+        `id` integer auto_increment primary key not null,
+        `title` varchar(256) not null,
+        `date` timestamp not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) Engine = InnoDB AUTO_INCREMENT=2 ;
 
 create table messages (
-    id integer primary key autoincrement not null,
-    reply_to integer not null,
-    thread_id integer not null,
-    author varchar(256) not null,
-    content text not null
-);
+        `id` integer auto_increment primary key not null,
+        `reply_to` integer not null,
+        `thread_id` integer not null,
+        `author` varchar(256) not null,
+        `content` text not null,
+        `date` timestamp not null DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        `file` varchar(256) DEFAULT NULL
+) Engine = InnoDB AUTO_INCREMENT=8 ;
+
+INSERT INTO `messages` (`id`, `reply_to`, `thread_id`, `author`, `content`, `date`, `file`) VALUES
+(1, 0, 1, 'Admin', 'ÐÐ° Ð±Ð¾Ñ€Ð´Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ Ð¼Ð¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ð´Ð²Ð¸Ð¶Ð¾Ðº ÑÐ¸Ð½Ñ‚Ð°ÐºÑÐ¸ÑÐ° Ñ€Ð°Ð·Ð¼ÐµÑ‚ÐºÐ¸ [markdown](http://daringfireball.net/projects/markdown/syntax).\r\n\r\nÐÐ¸Ð¶Ðµ Ð¿Ñ€Ð¸Ð²ÐµÐ´ÐµÐ½Ñ‹ Ð¿Ñ€Ð¸Ð¼ÐµÑ€Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ.', '2012-06-18 16:40:38', ''),
+(2, 0, 1, 'Admin', 'Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ¸:\r\n\r\n	Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 1-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n	=====================\r\n\r\n	Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 2-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n	---------------------\r\n\r\n	# Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 1-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n\r\n	### Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 3-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ ######\r\n\r\n	###### Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 6-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n\r\nÐ—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 1-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n=====================\r\n\r\nÐ—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 2-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n---------------------\r\n\r\n# Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 1-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ\r\n\r\n### Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 3-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ ######\r\n\r\n###### Ð—Ð°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº 6-Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ', '2012-06-18 16:43:11', ''),
+(3, 0, 1, 'Admin', 'Ð¦Ð¸Ñ‚Ð°Ñ‚Ñ‹, ÑÐ¿Ð¾Ð¹Ð»ÐµÑ€Ñ‹, Ñ€ÐµÑ„Ð»Ð¸Ð½ÐºÐ¸:\r\n\r\n	> Ð­Ñ‚Ð¾ Ñ†Ð¸Ñ‚Ð°Ñ‚Ð° Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð½Ð°Ñ Ð² Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¾ ÑÑ‚Ñ€Ð¾Ðº.\r\n\r\n	> ÐžÐ´Ð½Ð°ÐºÐ¾ ÑÑ‚Ð¾Ð¸Ñ‚ Ð·Ð°Ð¼ÐµÑ‚Ð¸Ñ‚ÑŒ, Ñ‡Ñ‚Ð¾ Ð² Ð´Ð°Ð½Ð½Ð¾Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ‚ÐºÐµ\r\n	> Ð²Ð¾Ð¾Ð±Ñ‰Ðµ Ð½Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÑŽÑ‚ÑŒÑÑ Ð¶ÐµÑÑ‚ÐºÐ¸Ðµ Ñ€Ð°Ð·Ñ€Ñ‹Ð²Ñ‹ ÑÑ‚Ñ€Ð¾Ðº.\r\n	> Ð’Ð¼ÐµÑÑ‚Ð¾ ÑÑ‚Ð¾Ð³Ð¾ Ñ‚ÐµÐºÑÑ‚ Ð²ÑÐµÐ³Ð´Ð° Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑŒÑÑ Ð² Ð¿Ð°Ñ€Ð°Ð³Ñ€Ð°Ñ„Ð°Ñ…,\r\n	> Ñ‡Ñ‚Ð¾ Ð´ÐµÐ»Ð°ÐµÑ‚ ÐµÐ³Ð¾ Ð±Ð¾Ð»ÐµÐµ Ñ‡Ð¸Ñ‚Ð°ÐµÐ¼Ñ‹Ð¼ Ð¿Ñ€Ð¸ Ð»ÑŽÐ±Ñ‹Ñ… Ñ€Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸ÑÑ….\r\n\r\n\r\n    >>1 - ÐŸÐ°ÑÑÐ¸Ð²Ð½Ð°Ñ ÑÑÑ‹Ð»ÐºÐ° Ð½Ð° ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ Ð½Ð° ÑÑ‚Ð¾Ð¹ Ð´Ð¾ÑÐºÐµ\r\n    \r\n    %%ÐÐµÐ±Ð¾Ð»ÑŒÑˆÐ¾Ð¹ ÑÐ¿Ð¾Ð¹Ð»ÐµÑ€%%\r\n\r\n> Ð­Ñ‚Ð¾ Ñ†Ð¸Ñ‚Ð°Ñ‚Ð° Ñ€Ð°Ð·Ð¼ÐµÑ‰ÐµÐ½Ð½Ð°Ñ Ð² Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¾ ÑÑ‚Ñ€Ð¾Ðº.\r\n\r\n> ÐžÐ´Ð½Ð°ÐºÐ¾ ÑÑ‚Ð¾Ð¸Ñ‚ Ð·Ð°Ð¼ÐµÑ‚Ð¸Ñ‚ÑŒ, Ñ‡Ñ‚Ð¾ Ð² Ð´Ð°Ð½Ð½Ð¾Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ‚ÐºÐµ\r\n> Ð²Ð¾Ð¾Ð±Ñ‰Ðµ Ð½Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÑŽÑ‚ÑŒÑÑ Ð¶ÐµÑÑ‚ÐºÐ¸Ðµ Ñ€Ð°Ð·Ñ€Ñ‹Ð²Ñ‹ ÑÑ‚Ñ€Ð¾Ðº.\r\n> Ð’Ð¼ÐµÑÑ‚Ð¾ ÑÑ‚Ð¾Ð³Ð¾ Ñ‚ÐµÐºÑÑ‚ Ð²ÑÐµÐ³Ð´Ð° Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÑŒÑÑ Ð² Ð¿Ð°Ñ€Ð°Ð³Ñ€Ð°Ñ„Ð°Ñ…,\r\n> Ñ‡Ñ‚Ð¾ Ð´ÐµÐ»Ð°ÐµÑ‚ ÐµÐ³Ð¾ Ð±Ð¾Ð»ÐµÐµ Ñ‡Ð¸Ñ‚Ð°ÐµÐ¼Ñ‹Ð¼ Ð¿Ñ€Ð¸ Ð»ÑŽÐ±Ñ‹Ñ… Ñ€Ð°Ð·Ñ€ÐµÑˆÐµÐ½Ð¸ÑÑ….\r\n\r\n\r\n>>1 - ÐŸÐ°ÑÑÐ¸Ð²Ð½Ð°Ñ ÑÑÑ‹Ð»ÐºÐ° Ð½Ð° ÑÐ¾Ð¾Ð±Ñ‰ÐµÐ½Ð¸Ðµ Ð½Ð° ÑÑ‚Ð¾Ð¹ Ð´Ð¾ÑÐºÐµ\r\n    \r\n%%ÐÐµÐ±Ð¾Ð»ÑŒÑˆÐ¾Ð¹ ÑÐ¿Ð¾Ð¹Ð»ÐµÑ€%%', '2012-06-18 16:51:01', ''),
+(4, 0, 1, 'Admin', 'Ð¡Ð¿Ð¸ÑÐºÐ¸ Ð¸ Ð¼Ð¾Ð½Ð¾ÑˆÐ¸Ñ€Ð½Ñ‹Ð¹ Ñ‚ÐµÐºÑÑ‚:\r\n\r\n    *   Red\r\n    *   Green\r\n    *   Blue\r\n\r\n    1.  Bird\r\n    2.  McHale\r\n    3.  Parish\r\n\r\n*   Red\r\n*   Green\r\n*   Blue\r\n\r\n\r\n1.  Bird\r\n2.  McHale\r\n3.  Parish\r\n\r\n\r\n	ÐŸÑ€Ð¸Ð¼ÐµÑ€ `ÐºÐ¾Ð´Ð°` Ð² Ð¾Ð´Ð½Ñƒ ÑÑ‚Ñ€Ð¾ÐºÑƒ.\r\n\r\n        Ð‘Ð»Ð¾Ðº ÐºÐ¾Ð´Ð°\r\n        Ñ Ð¶ÐµÑÑ‚ÐºÐ¸Ð¼Ð¸\r\n        Ñ€Ð°Ð·Ñ€Ñ‹Ð²Ð°Ð¼Ð¸ ÑÑ‚Ñ€Ð¾Ðº.\r\n    \r\nÐŸÑ€Ð¸Ð¼ÐµÑ€ `ÐºÐ¾Ð´Ð°` Ð² Ð¾Ð´Ð½Ñƒ ÑÑ‚Ñ€Ð¾ÐºÑƒ.\r\n\r\n    Ð‘Ð»Ð¾Ðº ÐºÐ¾Ð´Ð°\r\n    Ñ Ð¶ÐµÑÑ‚ÐºÐ¸Ð¼Ð¸\r\n    Ñ€Ð°Ð·Ñ€Ñ‹Ð²Ð°Ð¼Ð¸ ÑÑ‚Ñ€Ð¾Ðº.', '2012-06-18 16:54:45', ''),
+(5, 0, 1, 'Admin', 'Ð Ð°Ð·Ð´ÐµÐ»Ð¸Ñ‚ÐµÐ»Ð¸:\r\n\r\n    * * *\r\n\r\n    ***\r\n\r\n    ---------------------------------------\r\n\r\n* * *\r\n\r\n***\r\n\r\n---------------------------------------', '2012-06-18 16:55:33', ''),
+(6, 0, 1, 'Admin', 'Ð“Ð¸Ð¿ÐµÑ€ÑÑÑ‹Ð»ÐºÐ¸:\r\n\r\n    <http://example.com/>\r\n\r\n    <address@example.com>\r\n    \r\n    [Ð¡ÑÑ‹Ð»ÐºÐ°](http://example.net/) Ð½Ðµ Ð¸Ð¼ÐµÑŽÑ‰Ð°Ñ Ð¿Ð¾Ð´ÑÐºÐ°Ð·ÐºÐ¸.\r\n    \r\n    Ð ÑÑ‚Ð¾ [Ð¿Ñ€Ð¸Ð¼ÐµÑ€ ÑÑÑ‹Ð»ÐºÐ¸](http://example.com/ "ÐŸÐžÐ”Ð¡ÐšÐÐ—ÐšÐ!") ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‰ÑƒÑŽ Ð¿Ð¾Ð´ÑÐºÐ°Ð·ÐºÑƒ.\r\n\r\n<http://example.com/>\r\n\r\n<address@example.com>\r\n\r\n[Ð¡ÑÑ‹Ð»ÐºÐ°](http://example.net/) Ð½Ðµ Ð¸Ð¼ÐµÑŽÑ‰Ð°Ñ Ð¿Ð¾Ð´ÑÐºÐ°Ð·ÐºÐ¸.\r\n\r\nÐ ÑÑ‚Ð¾ [Ð¿Ñ€Ð¸Ð¼ÐµÑ€ ÑÑÑ‹Ð»ÐºÐ¸](http://example.com/ "ÐŸÐžÐ”Ð¡ÐšÐÐ—ÐšÐ!") ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‰ÑƒÑŽ Ð¿Ð¾Ð´ÑÐºÐ°Ð·ÐºÑƒ.\r\n', '2012-06-18 16:59:07', ''),
+(7, 0, 1, 'Admin', 'Ð’Ñ‹Ð´ÐµÐ»ÐµÐ½Ð¸Ðµ:\r\n\r\n    *single asterisks*\r\n\r\n    _single underscores_\r\n\r\n    **double asterisks**\r\n\r\n    __double underscores__\r\n\r\n    \\*this text is surrounded by literal asterisks\\*\r\n\r\n*single asterisks*\r\n\r\n_single underscores_\r\n\r\n**double asterisks**\r\n\r\n__double underscores__\r\n\r\n\\*this text is surrounded by literal asterisks\\*', '2012-06-19 02:03:05', '');
+
+INSERT INTO `threads` (`id`, `title`, `date`) VALUES
+(1, 'Ð Ð°Ð·Ð¼ÐµÑ‚ÐºÐ° MarkDown', '2012-06-19 02:03:05');
 
 commit;

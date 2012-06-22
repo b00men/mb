@@ -33,6 +33,7 @@ void master::clear()
 void master::prepare(data::master &c)
 {
         c.media=media_;
+        c.url_mrkdwn=1;
 }
 
 

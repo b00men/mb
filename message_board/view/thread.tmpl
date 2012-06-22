@@ -73,14 +73,16 @@ No.<%= m.msg_id %>
 
 
 <% template body() %>
-		<% include postform() %>
         <% foreach message in messages %>
-                <table>
-                <% item %><% include msg(message) %><% end %>
-                </table>
+                <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
+                <% item %><table class="posts"><% include msg(message) %></table><% end %>
+                
         <% empty %>
                 <span class="title"><h2><% gt "There are no comments." %></h2></span>
         <% end %>
+		<span class="title"><h2><% gt "Create New Post" %></h2></span>
+		<% include postform() %>
+   		<br />
 <% end template %>
 
 <% end view %>

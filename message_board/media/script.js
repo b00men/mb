@@ -27,7 +27,7 @@ window.onload=function(e)
 {
 	var match;
 
-	if(match=/#p([0-9]+)/.exec(document.location.toString()))
+
 	if(!document.forms.postform._2.value)
 	insert(">>"+match[1]+" ");	
 }
