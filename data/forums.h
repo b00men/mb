@@ -21,6 +21,7 @@ namespace data {
                 struct topic {
                         topic() : id(0) {}
                         std::string title;
+                        std::string date;
                         int id;
                 };
                 std::vector<topic> topics;

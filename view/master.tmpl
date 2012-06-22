@@ -29,6 +29,9 @@
                         <span class="title"><h1><% include title() %></h1></span>
                         <% include body() %>
                 </div>
+                <div id="links">
+                        <% include links() %>
+                </div>
         </div>
 </body>
 </html>
@@ -36,13 +39,14 @@
 
 <% template body() %><% end %>
 <% template links() %>
-<a href="<% url "/forums" %>"><% gt "Home" %></a>
+<a href="<% url "/forums"%>"><% gt "Home" %></a>
 <% end %>
 <% template note() %>
 <div class=note>
 <ul>
 <li>
-<% gt "You can use syntax" %> <a href="http://daringfireball.net/projects/markdown/syntax" target="_blank">markdown</a>.
+<% gt "You can use syntax" %>
+<a href="<% url "/user_thread" using url_mrkdwn %>"" target="_blank">markdown</a>.
 </li>
 </ul>
 </div>

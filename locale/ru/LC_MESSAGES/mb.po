@@ -1,4 +1,3 @@
-# Copyright (C) Artyom Beilis
 # This file is distributed under the same license as the mb package.
 #
 msgid ""
@@ -13,73 +12,65 @@ msgstr ""
 msgid "Title"
 msgstr "Название"
 
-#: src/forums.cpp:16 src/thread.cpp:16
 msgid "Author"
 msgstr "Автор"
 
-#: src/forums.cpp:17 src/thread.cpp:17
-msgid "Comment"
-msgstr "Комментарий"
+msgid "Message"
+msgstr "Сообщение"
 
-#: src/forums.cpp:18
 msgid "Create"
 msgstr "Создать"
 
-#: src/thread.cpp:18
 msgid "Send"
 msgstr "Отправить"
 
-#: master.tmpl:5
 msgid "Welcome to the Message Board"
 msgstr "Добро пожаловать на Доску Сообщений"
 
-#: master.tmpl:37
 msgid "Home"
 msgstr "Домой"
 
-#: forums.tmpl:11
 msgid "No Topics"
-msgstr "Нет топиков"
+msgstr "Нет тем обсуждения"
 
-#: forums.tmpl:13
 msgid "Create New Disussion"
-msgstr "Создать новую дискуссию"
+msgstr "Создать новое обсуждение"
 
-#: forums.tmpl:23
+msgid "List of Disussion"
+msgstr "Список тем"
+
+msgid "Create New Post"
+msgstr "Создать новое сообщение"
+
+msgid "Lists of the posts"
+msgstr "Список сообщений"
+
 msgid "Next Page"
 msgstr "Следующая страница"
 
-#: forums.tmpl:26
 msgid "Prev Page"
 msgstr "Предыдущая страница"
 
-#: thread.tmpl:6
 msgid "Reply"
 msgstr "Ответ"
 
-#: thread.tmpl:18
 msgid "Disussion: {1}"
-msgstr "Дискуссия: {1}"
+msgstr "Обсуждение: {1}"
 
-#: thread.tmpl:23
 msgid "Flat View"
-msgstr "Лента"
+msgstr "Плоский вид"
 
-#: thread.tmpl:24
 msgid "Tree View"
-msgstr "Дерево"
+msgstr "Вид дерева"
 
-#: thread.tmpl:39 thread.tmpl:64
 msgid "There is no comments"
-msgstr "Комментариев нет"
+msgstr "Сообщений нет"
 
-#: thread.tmpl:75
 msgid "Comment to thread: {1}"
-msgstr "Комментарий к треду: {1}"
+msgstr "Комментарий к обсуждению: {1}"
 
-#: thread.tmpl:79
 msgid "Back to thread"
-msgstr "Вернуться в тред"
+msgstr "Вернуться в обсуждение"
 
 msgid "Error: empty author."
 msgstr "Ошибка: автор не заполнен."
@@ -87,8 +78,17 @@ msgstr "Ошибка: автор не заполнен."
 msgid "Error: empty message."
 msgstr "Ошибка: сообщение не заполнено."
 
+msgid "Error: empty form."
+msgstr "Ошибка: форма не заполнена."
+
 msgid "You can use syntax"
 msgstr "В сообщениях можно использовать разметку"
 
 msgid "Upload"
 msgstr "Вложение"
+
+msgid "Thread"
+msgstr "Обсуждение"
+
+msgid "Last Post"
+msgstr "Последнее сообщение"

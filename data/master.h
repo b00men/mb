@@ -7,9 +7,9 @@ namespace data {
         class master: public cppcms::base_content {
         public:
                 std::string media;
+                int url_mrkdwn;
         };
-
-
+        
 }
 
 

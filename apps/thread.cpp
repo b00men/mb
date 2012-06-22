@@ -15,11 +15,11 @@ reply_form::reply_form()
         using cppcms::locale::translate;
         author.message(translate("Author"));
         author.value(translate("Anon"));
-        author.error_message(translate("Error: empty author."));
-        comment.message(translate("Comment"));
+        //author.error_message(translate("Error: empty author."));
+        comment.message(translate("Message"));
         comment.rows(6);
         comment.cols(60);
-        comment.error_message(translate("Error: empty message."));
+        //comment.error_message(translate("Error: empty message."));
         image.message(translate("Upload"));
         image.limits(0,5*1024*1024);
         send.value(translate("Send"));
@@ -146,7 +146,13 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                                 << mid << id << c2.form.author.value() << c2.form.comment.value() 
                                 << path << cppdb::exec;
                                 
-                        int lastid=st.last_insert_id();       
+                        int lastid=st.last_insert_id();
+
+                        st=sql<<   "UPDATE threads "
+                                "SET date=NOW() "
+                                "WHERE id=? " 
+                                << id << cppdb::exec;
+                                       
                         if(c2.form.image.set())
                         {
                         	std::stringstream ss;
@@ -161,6 +167,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 
                         response().set_redirect_header(url("/user_thread",id));
                         c2.form.clear();
+                        
                         return;
                 }        
                 c2.thread_id = id;
