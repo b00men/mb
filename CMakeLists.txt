@@ -16,6 +16,8 @@ endif()
 
 # For markdown
 find_package(Boost 1.45.0 COMPONENTS regex)
+find_package(ImageMagick COMPONENTS Magick++)
+include_directories(${ImageMagick_INCLUDE_DIRS})
 
 find_library(LIB_BOOSTER booster)
 find_library(LIB_CPPCMS cppcms)
@@ -81,6 +83,7 @@ target_link_libraries(mb ${Boost_LIBRARIES})
 target_link_libraries(mb ${LIB_CPPCMS})
 target_link_libraries(mb ${LIB_BOOSTER})
 target_link_libraries(mb ${LIB_CPPDB})
+target_link_libraries(mb ${ImageMagick_LIBRARIES})
 
 if(EXE_MSGFMT)
         set(MO_FILES)

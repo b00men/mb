@@ -5,6 +5,7 @@
 #include <cppcms/cache_interface.h>
 #include <boost/lexical_cast.hpp>
 #include <cppcms/http_file.h>
+#include <Magick++.h>
 
 namespace data {
 
@@ -20,7 +21,7 @@ new_topic_form::new_topic_form()
         comment.message(translate("Message"));
         //comment.attributes_string(" cols=60 rows=6 ");
         comment.rows(6);
-        comment.cols(60);
+        comment.cols(55);
         comment.non_empty();
         image.message(translate("Upload"));
         image.limits(0,5*1024*1024);
@@ -91,12 +92,13 @@ void forums::prepare(std::string page)
                         cppdb::statement st;
                         cppdb::statement nextst;
                         std::string path="";
+						std::string path_thumb="";
                     	if(c.form.image.set())
                         {
 		                	path = "txt";
-		                	if(c.form.image.value()->mime() == "image/png") path="png";
-		                	if(c.form.image.value()->mime() == "image/jpeg") path="jpg";
-		                	if(c.form.image.value()->mime() == "image/gif") path="gif";
+		                	if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
+		                	if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
+		                	if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
 		                	if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
 		                	if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
 		                	if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
@@ -135,6 +137,28 @@ void forums::prepare(std::string page)
                     		path="";
                         	ss>>path;
 						    c.form.image.value()->save_to(path);
+                        }
+
+                        if(path_thumb!="")
+                        {
+                        	std::stringstream ss2;
+                        	ss2<<"./media/uploads/thumb_"<<tid<<"_"<<id<<"."<<path_thumb;
+                    		path_thumb="";
+                        	ss2>>path_thumb;
+		                	  try {
+									Magick::Image thumb;
+									thumb.read(path);
+									thumb.resize("200x200>");
+									thumb.write(path_thumb);
+							        st=sql<<   "UPDATE messages "
+							                "SET thumb=1 "
+							                "WHERE id=? " 
+							                << id << cppdb::exec;
+
+								  }
+								  catch( std::exception &error_ )
+									{
+									}
                         }
                         
                         // We need to invalidate all pages on new post

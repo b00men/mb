@@ -6,6 +6,7 @@
 #include <cppcms/cache_interface.h>
 #include <cppcms/http_file.h>
 #include <markdown/markdown.h>
+#include <Magick++.h>
 
 
 namespace data {
@@ -18,7 +19,7 @@ reply_form::reply_form()
         //author.error_message(translate("Error: empty author."));
         comment.message(translate("Message"));
         comment.rows(6);
-        comment.cols(60);
+        comment.cols(55);
         //comment.error_message(translate("Error: empty message."));
         image.message(translate("Upload"));
         image.limits(0,5*1024*1024);
@@ -110,13 +111,14 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         cppdb::statement st;
                         
 						std::string path="";
+						std::string path_thumb="";
 						
                     	if(c2.form.image.set())
                         {
 		                	path = "txt";
-		                	if(c2.form.image.value()->mime() == "image/png") path="png";
-		                	if(c2.form.image.value()->mime() == "image/jpeg") path="jpg";
-		                	if(c2.form.image.value()->mime() == "image/gif") path="gif";
+		                	if(c2.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
+		                	if(c2.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
+		                	if(c2.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
 		                	if(c2.form.image.value()->mime() == "image/svg+xml") path="svg";
 		                	if(c2.form.image.value()->mime() == "audio/mpeg") path="mp3";
 		                	if(c2.form.image.value()->mime() == "audio/ogg") path="ogg";
@@ -162,12 +164,33 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 						    c2.form.image.value()->save_to(path);
                         }
 
+                        if(path_thumb!="")
+                        {
+                        	std::stringstream ss2;
+                        	ss2<<"./media/uploads/thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
+                    		path_thumb="";
+                        	ss2>>path_thumb;
+		                	  try {
+									Magick::Image thumb;
+									thumb.read(path);
+									thumb.resize("200x200>");
+									thumb.write(path_thumb);
+							        st=sql<<   "UPDATE messages "
+							                "SET thumb=1 "
+							                "WHERE id=? " 
+							                << lastid << cppdb::exec;
+
+								  }
+								  catch( std::exception &error_ )
+									{
+									}
+                        }
+
                         cache().rise("thread_" + sid);
                         tr.commit();
 
                         response().set_redirect_header(url("/user_thread",id));
                         c2.form.clear();
-                        
                         return;
                 }        
                 c2.thread_id = id;
@@ -189,14 +212,14 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 		             
 		        
 		cppdb::result r;
-		r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file "
+		r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file,thumb "
 		        "FROM messages WHERE thread_id=? "
 		        "ORDER BY id" << id;
 		
 		c.messages.reserve(10);
 		for(int i=0;r.next();i++) {
 		        c.messages.resize(i+1);
-		        r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file;
+		        r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file>>c.messages[i].thumb;
 		}
 		session()["view"]="flat";
 		render("flat_thread",c);
@@ -252,7 +275,7 @@ void tree_thread::prepare(std::string sid)
         if(!thread_shared::prepare(c,id))
                 return;
         cppdb::result r;
-        r=sql<< "SELECT reply_to,id,thread_id,author,content,file,date "
+        r=sql<< "SELECT reply_to,id,thread_id,author,content,file,date,thumb "
                 "FROM messages WHERE thread_id=? "
                 "ORDER BY reply_to,id DESC" << id;
         msg_ord_t all;
@@ -260,7 +283,8 @@ void tree_thread::prepare(std::string sid)
                 int msg_id,rpl_id,tid;
                 r>>rpl_id>>msg_id>>tid;
                 data::msg &message=all[rpl_id][msg_id];
-                r>>message.author>>message.content>>message.file>>message.date;
+                // Dont work "thumb" var. Allways == 0.
+                r>>message.author>>message.content>>message.file>>message.date>>message.thumb;
                 message.msg_id=msg_id;
                 message.tid=tid;
         }

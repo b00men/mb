@@ -37,10 +37,6 @@ body{
 	width:600px;
 }
 
-.file img,.file_t img { /*Костыль до создания ресайза на imagemagick*/
-    max-width: 200px;
-}
-
 .file {
 	float: left;
 	margin: 5px 10px;
