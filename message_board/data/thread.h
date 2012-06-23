@@ -22,6 +22,7 @@ struct msg {
         std::string reply_to;
         std::string date;
         std::string file;
+        int thumb;
         int msg_id;
         int tid;
         msg() : msg_id(0) {}

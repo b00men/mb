@@ -27,8 +27,8 @@ No.<%= m.msg_id %>
 <% if (!(m.file=="")) %>
 <div class="file">
 <a href="../media/uploads/<%= m.tid %>_<%= m.msg_id %>.<%= m.file %>" target="_blank">
-<% if ((m.file=="png")||(m.file=="gif")||(m.file=="jpg")) %>
-<img src="../media/uploads/<%= m.tid %>_<%= m.msg_id %>.<%= m.file %>" max-width=10% alt="File(<%= m.file %>)" title="Uploaded file" />
+<% if (m.thumb==1) %>
+<img src="../media/uploads/thumb_<%= m.tid %>_<%= m.msg_id %>.<%= m.file %>" alt="File(<%= m.file %>)" title="Uploaded file" />
 <% else %>
 <img src="../media/images/<%= m.file %>.png" width="48" high="48" alt="File(<%= m.file %>)" title="Uploaded file" />
 <% end %>
@@ -105,12 +105,11 @@ No.<%= m.msg_id %>
 								<% if (!(message.second.file=="")) %>
 								<div class="file_t">
 								<a href="../media/uploads/<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" target="_blank">
-								<% if ((message.second.file=="png")||(message.second.file=="gif")||(message.second.file=="jpg")) %>
-								<img src="../media/uploads/<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" alt="File(<%= message.second.file %>)" title="Uploaded file" />
-								<% else %>
-								<img src="../media/images/<%= message.second.file %>.png" width="48" high="48" alt="File(<%= message.second.file %>)" title="Uploaded file" />
-								<% end %>
-								</a>
+								<% if (message.second.thumb==1) %>
+<img src="../media/uploads/thumb_<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" max-width=10% alt="File(<%= message.second.file %>)" title="Uploaded file" />
+<% else %>
+<img src="../media/images/<%= message.second.file %>.png" width="48" high="48" alt="File(<%= message.second.file %>)" title="Uploaded file" />
+<% end %></a>
 								</div>
 								<% end %>
 								
@@ -174,6 +173,7 @@ No.<%= m.msg_id %>
         </form>
         <% include master::note() %>
         </div>
+        <br />
 <% end template %>
 
 <% end view %>
