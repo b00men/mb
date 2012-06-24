@@ -143,7 +143,7 @@ void forums::prepare(std::string page)
                         if(path_thumb!="")
                         {
                         	std::stringstream ss2;
-                        	ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
+                        	ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<tid<<"_"<<id<<"."<<path_thumb;
                     		path_thumb="";
                         	ss2>>path_thumb;
 		                	  try {
