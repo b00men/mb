@@ -3,28 +3,26 @@
         "mb" : {
                 "media" : "/media",
                 "root" : "",
+                "uploads" : "/var/www/media/uploads/",
+                "languages" : {
+                        "en" : "en_US.UTF-8" ,
+                        "ru" : "ru_RU.UTF-8"
+                },
+                // Choose your datebase type
                 //"connection_string" : "sqlite3:db=mb.db;@pool_size=10"
-                "connection_string" : "mysql:database=cppcms_test;user=cppcms_test;password=E8CQqRbHYFAuEB9E;@pool_size=10"
+                //"connection_string" : "mysql:database=name_of_datebase;user=user_of_datebase;password=password;@pool_size=10"
         },
         "service" : {
-                "api" : "http",
-                "port" : 8080
-        },
-        "http" : {
-                "script" : "/mb",
-                "rewrite" : [
-                        { "regex" : "/media(/.*)?", "pattern" : "$0" },
-                        { "regex" : "/favicon\\.ico", "pattern" : "$0" },
-                        { "regex" : ".*" , "pattern" : "/mb$0" }
-                ]
+                "api" : "fastcgi",
+                "socket" : "/tmp/mb-fcgi.sock"
         },
         "views" : {
-                 "paths" : [ "./" ],
+                 "paths" : [ "/usr/local/lib/mb" ],
                  "skins" : [ "simple" ],
         },
         "file_server" : {
                 "enable" : true,
-                "document_root" : "./"
+                "document_root" : "/var/www/"
         },
         "session" : {
                 "expire" : "renew",
@@ -32,7 +30,7 @@
                 "location" : "client",
                 "client" : {
                         "hmac" : "sha1",
-                        "hmac_key" : "232074faa0fd37de20858bf8cd0a7d04"
+                        //"hmac_key" : "Your hmac_key"
                 }
         },
         "cache" : {
@@ -47,13 +45,13 @@
         },
         "localization" : {
                 "messages" : {
-                        "paths" : [ "./locale" ],
+                        "paths" : [ "/usr/local/share/locale" ],
                         "domains" : [ "mb" ]
                 },
                 "locales" : [
                 		"ru_RU.UTF-8", 
-                        "en_US.UTF-8",
-                        "he_IL.UTF-8"
+                        "en_US.UTF-8"
                 ]
         }
 }
+

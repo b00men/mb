@@ -1,9 +1,15 @@
 cmake_minimum_required(VERSION 2.6)
-project(cppcms)
+project(message_board)
 
 include_directories(${CMAKE_SOURCE_DIR})
 
 # Options 
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+        "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+	      FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
 
 option(STATIC_VIEW "Build Static View instead of dynamically loaded one" OFF)
 
@@ -102,6 +108,30 @@ if(EXE_MSGFMT)
 else()
         message("-- msgfmt not found, translations not generatied")
 endif()
+
+install(TARGETS mb simple
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib/mb
+	ARCHIVE DESTINATION lib/mb)
+
+foreach(IMAGES css csv deb flv gif gz html jpeg jpg js mkv mp3 mp4 ogg pdf png qt rar svg tar txt wav webm wmv xml zip) 
+	install(FILES media/images/${IMAGES}.png DESTINATION share/mb/media/images)
+endforeach()
+
+foreach(STYLE script.js style.css style-ltr.css style-rtl.css) 
+	install(FILES media/${STYLE} DESTINATION share/mb/media)
+endforeach()
+
+foreach(SQL sqlite3 mysql) 
+	install(FILES model/${SQL}.sql DESTINATION share/mb/sql)
+endforeach()
+
+foreach(LOCALE ${MB_LANG})
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/locale/${LOCALE}/LC_MESSAGES/mb.mo 
+		DESTINATION share/locale/${LOCALE}/LC_MESSAGES/)
+endforeach()
+
+install(FILES config.js.sample DESTINATION share/mb)
 
 if(EXE_SQLITE3)
         add_custom_command(
