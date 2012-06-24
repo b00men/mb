@@ -7,6 +7,7 @@
 #include <cppcms/http_file.h>
 #include <markdown/markdown.h>
 #include <Magick++.h>
+#include <cppcms/json.h>
 
 
 namespace data {
@@ -158,7 +159,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         if(c2.form.image.set())
                         {
                         	std::stringstream ss;
-                        	ss<<"./media/uploads/"<<id<<"_"<<lastid<<"."<<path;
+                        	ss<<settings().get<std::string>("mb.uploads")<<id<<"_"<<lastid<<"."<<path;
                     		path="";
                         	ss>>path;
 						    c2.form.image.value()->save_to(path);
@@ -167,7 +168,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         if(path_thumb!="")
                         {
                         	std::stringstream ss2;
-                        	ss2<<"./media/uploads/thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
+                        	ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
                     		path_thumb="";
                         	ss2>>path_thumb;
 		                	  try {
@@ -367,7 +368,7 @@ void reply::prepare(std::string smid) // smid (mid) - id of message
                         {   
                         	//std::string new_name = c.form.image.value()->filename();
                         	std::stringstream ss;
-                        	ss<<"./media/uploads/"<<tid<<"_"<<id<<"."<<path;
+                        	ss<<(settings().get<std::string>("mb.uploads"))<<tid<<"_"<<id<<"."<<path;
                     		path="";
                         	ss>>path;
 						    c.form.image.value()->save_to(path);

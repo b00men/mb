@@ -6,6 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include <cppcms/http_file.h>
 #include <Magick++.h>
+#include <cppcms/json.h>
 
 namespace data {
 
@@ -133,7 +134,7 @@ void forums::prepare(std::string page)
                         {   
                         	//std::string new_name = c.form.image.value()->filename();
                         	std::stringstream ss;
-                        	ss<<"./media/uploads/"<<tid<<"_"<<id<<"."<<path;
+                        	ss<<settings().get<std::string>("mb.uploads")<<tid<<"_"<<id<<"."<<path;
                     		path="";
                         	ss>>path;
 						    c.form.image.value()->save_to(path);
@@ -142,7 +143,7 @@ void forums::prepare(std::string page)
                         if(path_thumb!="")
                         {
                         	std::stringstream ss2;
-                        	ss2<<"./media/uploads/thumb_"<<tid<<"_"<<id<<"."<<path_thumb;
+                        	ss2<<settings().get<std::string>("mb.uploads")<<tid<<"_"<<id<<"."<<path_thumb;
                     		path_thumb="";
                         	ss2>>path_thumb;
 		                	  try {
