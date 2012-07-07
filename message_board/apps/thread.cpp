@@ -188,6 +188,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         }
 
                         cache().rise("thread_" + sid);
+                        cache().rise("new_thread");
                         tr.commit();
 
                         response().set_redirect_header(url("/user_thread",id));
@@ -375,6 +376,7 @@ void reply::prepare(std::string smid) // smid (mid) - id of message
                         }
 
                         cache().rise("thread_" + stid);
+                        cache().rise("new_thread");
                         tr.commit();
 
                         response().set_redirect_header(url("/user_thread",tid));
