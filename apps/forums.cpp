@@ -176,19 +176,14 @@ void forums::prepare(std::string page)
         }
         else {
                 std::string key = "main_page_" + page;
-                
-                // It's very bad idea. Cache must be used.
-                // See apps/threads.cpp where have "POST" and vailidate form.
-                data::forums c;
-                prepare_content(c,page);
 
                 if(cache().fetch_page(key))
                         return;
                 // Add some shared key for all main_page_
                 cache().add_trigger("new_thread");
                 
-                //data::forums c;
-                //prepare_content(c,page);
+                data::forums c;
+                prepare_content(c,page);
 
                 cache().store_page(key);
 
