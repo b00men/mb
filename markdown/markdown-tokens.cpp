@@ -338,7 +338,7 @@ std::string RawText::_processLink2PostSpans(std::string src, ReplacementTable&
 	replacements)
 {
 	static const boost::regex cLink2PostSpan[2]={
-		boost::regex("(?:^|(?<=[^\\\\]))>>([0-9]+?)[ \f\n\r\t\v]")
+		boost::regex("(?:^|(?<=[^\\\\]))>>([0-9]+?)($|[ ])")
 	};
 	for (int pass=0; pass<1; ++pass) {
 		std::string tgt;
