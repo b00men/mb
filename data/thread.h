@@ -49,21 +49,9 @@ public:
 
 };
 
-class tree_thread : public thread_shared {
+class auth : public thread_shared , public msg {
 public:
-        struct tree_msg : public msg {
-                typedef std::map<int,tree_msg> tree_t;
-                tree_t repl;
-        };
-        tree_msg::tree_t messages;
 
-};
-
-typedef tree_thread::tree_msg::tree_t tree_t;
-
-class reply : public thread_shared , public msg {
-public:
-        reply_form form;
 
 };
 

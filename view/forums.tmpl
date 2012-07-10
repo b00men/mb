@@ -23,8 +23,8 @@
         <% end %>
         <br />
         <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
-        <div class="forms">
-        <form action="<% url "/forums" %>" method="post" enctype="multipart/form-data" ><% csrf script %>
+        <div class="forms"><a name="end"></a>
+        <form action="<% url "/forums" %>#end" method="post" enctype="multipart/form-data" ><% csrf script %>
         <table>
         <% form as_table form %>
         </table>

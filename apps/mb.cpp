@@ -21,12 +21,6 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
                 "flat_thread",
                 "/flat/{1}",
                 "/flat/(\\d+)",1);
-              
-
-        attach( new tree_thread(s),
-                "tree_thread",
-                "/tree/{1}",
-                "/tree/(\\d+)",1);
 
         attach( new reply(s),
                 "comment",

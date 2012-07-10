@@ -23,11 +23,7 @@ function insert(text)
 	}
 }
 
-window.onload=function(e)
+function key2post(e, form)
 {
-	var match;
-
-
-	if(!document.forms.postform._2.value)
-	insert(">>"+match[1]+" ");	
+	if (((e.keyCode == 13) || (e.keyCode == 10)) && (e.ctrlKey == true)) form.submit();
 }
