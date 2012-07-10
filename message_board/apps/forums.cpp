@@ -15,14 +15,11 @@ new_topic_form::new_topic_form()
         using cppcms::locale::translate;
         title.message(translate("Title"));
         title.limits(1,64);
-        //title.error_message(translate("Error: empty form."));
         author.message(translate("Author"));
         author.value(translate("Anon"));
         author.limits(1,64);
         comment.message(translate("Message"));
-        //comment.attributes_string(" cols=60 rows=6 ");
-        comment.rows(6);
-        comment.cols(55);
+        comment.attributes_string(" cols=55 rows=6 onkeypress='key2post(event, this.form);' ");
         comment.non_empty();
         image.message(translate("Upload"));
         image.limits(0,5*1024*1024);
@@ -132,7 +129,6 @@ void forums::prepare(std::string page)
                         int id=nextst.last_insert_id();
                         if(c.form.image.set())
                         {   
-                        	//std::string new_name = c.form.image.value()->filename();
                         	std::stringstream ss;
                         	ss<<settings().get<std::string>("mb.uploads")<<tid<<"_"<<id<<"."<<path;
                     		path="";

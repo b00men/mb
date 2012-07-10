@@ -17,13 +17,6 @@ void master::init()
 {
         sql.open(conn_str_);
         parent()->mapper().set_value("method","flat");
-        /*
-        if(!session().is_set("view") || session()["view"]=="flat") {
-                parent()->mapper().set_value("method","flat");
-        }
-        else {
-                parent()->mapper().set_value("method","tree");
-        }*/
 }
 void master::clear()
 {

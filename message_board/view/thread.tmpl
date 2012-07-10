@@ -6,11 +6,11 @@
 <a name="p<%= m.msg_id %>"></a><span class="author"><%= m.author %></span>
 <%= m.date %>
 <% if (false) %>
-<a href="javascript:insert('&gt;&gt;<%= m.msg_id %> ')">No.<%= m.msg_id %></a> | 
+<a href="javascript:insert('&gt;&gt;<%= m.msg_id %>\n')">No.<%= m.msg_id %></a> | 
 <a href="<% url "/comment" using m.msg_id %>"><% gt "Reply" %></a>
 <% else %>
 No.<%= m.msg_id %>
-<a href="javascript:insert('&gt;&gt;<%= m.msg_id %> ')"><% gt "Reply" %></a>
+<a href="javascript:insert('&gt;&gt;<%= m.msg_id %>\n')"><% gt "Reply" %></a>
 <% end %>
 <% end %>
 
@@ -58,8 +58,8 @@ No.<%= m.msg_id %>
 <% view flat_thread uses data::flat_thread  extends base_thread %>
 
 <% template postform() %>
-        <div class="forms">
-        <form id="postform" action="" method="post" enctype="multipart/form-data" ><% csrf %>
+        <div class="forms"><a name="end"></a>
+        <form id="postform"  action="#end" method="post" enctype="multipart/form-data" ><% csrf %>
         <table>
                 <% form as_table form.author %>
                 <% form as_table form.comment %>
@@ -86,97 +86,5 @@ No.<%= m.msg_id %>
 <% end template %>
 
 <% end view %>
-
-
-<% view tree_thread uses data::tree_thread  extends base_thread %>
-
-<% template display(data::tree_t &tree) %>
-
-        <% foreach message in tree %>
-                
-                
-                <% item %>
-                <div class="post">
-				                
-				                <div class="post_title">
-								<% include msg_header(message.second) %>
-								</div>
-
-								<% if (!(message.second.file=="")) %>
-								<div class="file_t">
-								<a href="../media/uploads/<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" target="_blank">
-								<% if (message.second.thumb==1) %>
-<img src="../media/uploads/thumb_<%= message.second.tid %>_<%= message.second.msg_id %>.<%= message.second.file %>" max-width=10% alt="File(<%= message.second.file %>)" title="Uploaded file" />
-<% else %>
-<img src="../media/images/<%= message.second.file %>.png" width="48" high="48" alt="File(<%= message.second.file %>)" title="Uploaded file" />
-<% end %></a>
-								</div>
-								<% end %>
-								
-                                <div class="comment">
-								<% include msg_cnt(message.second) %>
-								</div>
-								</div>
-								<div class="reply">
-                                <% include display(message.second.repl) %>
-                                </div>
-                <% end %>
-                
-                
-        <% end %>
-<% end template %>
-
-<% template body() %>
-        <% if empty messages %>
-                <span class="title"><h2><% gt "There are no comments." %></h2></span>
-        <% else %>
-        
-                <% include display(messages) %>
-        
-        <% end %>
-<% end template %>
-
-<% end view %>
-
-
-<% view reply uses data::reply extends master %>
-
-<% template title() %><% gt "Comment to thread: {1}" using title %><% end %>
-
-<% template links() %>
-        <% include master::links() %>
-        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Back to thread" %></a>
-<% end %>
-
-<% template body() %>
-        <% if not empty content %>
-        		<center><table><tr><td>
-                <div class="post_flat">
-                		<div class="post_title">
-                        <span class="author"><%= author %></span>
-<%= date %> No.<%= msg_id %>
-                        </div>
-                        <div class="comment">
-                        <%= content | ext text2html %>
-                        </div>
-                </div>
-                </td><tr></table></center>
-        <% end %>
-        <div class="forms">
-        <form action="" method="post" enctype="multipart/form-data" ><% csrf %>
-        <table>
-                <% form as_table form.author %>
-                <% form as_table form.comment %>
-                <% form as_table form.image %>
-                <% form as_table form.send %>
-        </table>
-        </form>
-        <% include master::note() %>
-        </div>
-        <br />
-<% end template %>
-
-<% end view %>
-
 
 <% end skin %>

@@ -24,15 +24,6 @@ public:
         void prepare(std::string id); 
 };
 
-class tree_thread : public thread_shared {
-public:
-
-        tree_thread(cppcms::service &s);
-        void prepare(std::string id);
-};
-
-typedef data::tree_t tree_t;
-
 class reply : public thread_shared {
 public:
 
