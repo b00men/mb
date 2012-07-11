@@ -15,6 +15,13 @@ struct reply_form : public cppcms::form {
         reply_form();
 };
 
+struct login_form : public cppcms::form, public master {
+        cppcms::widgets::text login;
+        cppcms::widgets::password password;
+        cppcms::widgets::submit submit;
+        login_form();
+};
+
 
 struct msg {
         std::string author;
@@ -49,10 +56,10 @@ public:
 
 };
 
-class auth : public thread_shared , public msg {
+class auth : public thread_shared{
 public:
-
-
+        login_form form;
+        std::string status;
 };
 
 

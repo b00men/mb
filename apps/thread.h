@@ -24,10 +24,10 @@ public:
         void prepare(std::string id); 
 };
 
-class reply : public thread_shared {
+class auth : public thread_shared {
 public:
 
-        reply(cppcms::service &s);
+        auth(cppcms::service &s);
         void prepare(std::string id);
 };
 

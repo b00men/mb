@@ -30,8 +30,21 @@ reply_form::reply_form()
         comment.non_empty();
 }
 
+login_form::login_form()
+{
+        using cppcms::locale::translate;
+        login.message(translate("Login"));
+        password.message(translate("Password"));
+        submit.value(translate("Sign in"));
+        add(login);
+        add(password);
+        add(submit);
+        login.non_empty();
+        password.non_empty();
+}
 
 } // data
+
 
 namespace {
         std::string text2html(std::string const &s)
@@ -199,15 +212,33 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 		cache().store_page(key);
 }
 
-reply::reply(cppcms::service &srv) : thread_shared(srv)
+auth::auth(cppcms::service &srv) : thread_shared(srv)
 {
-        dispatcher().assign(".*",&reply::prepare,this,0);
-        mapper().assign("{1}");
+        mapper().assign("");
+        dispatcher().assign(".*",&auth::prepare,this,0);
 }
 
-void reply::prepare(std::string smid) // smid (mid) - id of message
+void auth::prepare(std::string smid)
 {
-		return;
+		data::auth c;
+		c.status=translate("You are not authentication.");
+		if(request().request_method()=="POST") {
+				c.form.load(context());
+				if(c.form.validate())
+				if ((c.form.login.value()==settings().get<std::string>("mb.admin_login"))&&(c.form.password.value()==settings().get<std::string>("mb.admin_password"))) {
+					session().reset_session();
+					session()["login"]="true";
+				}
+				else {
+				c.status=translate("Login incorect!");
+				session().clear();
+				}
+		}
+		if ((session().is_set("login"))&&(session()["login"]=="true"))
+			c.status=translate("Login success!");
+
+		master::prepare(c);
+		render("auth",c);		
 }
 
 } // namespace apps

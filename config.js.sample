@@ -4,6 +4,8 @@
                 "media" : "/media",
                 "root" : "",
                 "uploads" : "/var/www/media/uploads/",
+                "admin_login" : "Admin",
+                "admin_password" : "Password",
                 "languages" : {
                         "en" : "en_US.UTF-8" ,
                         "ru" : "ru_RU.UTF-8"

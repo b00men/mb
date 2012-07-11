@@ -87,4 +87,30 @@ No.<%= m.msg_id %>
 
 <% end view %>
 
+
+<% view auth uses data::auth extends master %>
+
+<% template title() %><% gt "Authentication" using title %><% end %>
+
+<% template links() %>
+        <% include master::links() %>
+<% end %>
+
+<% template body() %>
+        <div class="forms">
+        <form action="" method="post" enctype="multipart/form-data" ><% csrf %>
+        <table>
+                <% form as_table form.login %>
+                <% form as_table form.password %>
+                <% form as_table form.submit %>
+                <tr><th>&nbsp;</th><td><b><%= status %></b></td><tr>
+        </table>
+        </form>
+        </div>
+        <br />
+<% end template %>
+
+<% end view %>
+
+
 <% end skin %>
