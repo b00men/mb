@@ -22,10 +22,10 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
                 "/flat/{1}",
                 "/flat/(\\d+)",1);
 
-        attach( new reply(s),
-                "comment",
-                "/comment/{1}",
-                "/comment/(\\d+)",1);
+        attach( new auth(s),
+                "admin",
+                "/admin/{1}",
+                "/admin(/)?",2);
         
         // Generic mapping
         mapper().root(settings().get<std::string>("mb.root"));
