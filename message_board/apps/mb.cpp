@@ -29,7 +29,7 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
         
         // Generic mapping
         mapper().root(settings().get<std::string>("mb.root"));
-        mapper().assign("user_thread","/{method}/{1}");
+        mapper().assign("user_thread","/flat/{1}");
 }
 
 } // apps

@@ -43,6 +43,17 @@ login_form::login_form()
         password.non_empty();
 }
 
+delete_msg_form::delete_msg_form()
+{
+        using cppcms::locale::translate;
+        del_msg.value(translate("Delete selected messages"));
+        id_box.identification("value"); // value of "value", default="y". Recomendated id thread.
+        id_box.name("name"); // value of "name". Recomendated id post.
+        id_box.value(0); // state of checkbox
+        add(id_box);
+        add(del_msg);
+}
+
 } // data
 
 
@@ -95,15 +106,11 @@ flat_thread::flat_thread(cppcms::service &s) : thread_shared(s)
 
 void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 {
-        std::string key = "flat_thread_" + sid;
+		data::flat_thread c;
         int mid = 0;
-
-        cache().add_trigger("thread_" + sid);
-        
-        data::flat_thread c;
-        
         int id = atoi(sid.c_str());
         if(request().request_method()=="POST") {
+
                 c.form.load(context());
                 if(c.form.validate()) {
                         cppdb::transaction tr(sql);
@@ -169,7 +176,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         	ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
                     		path_thumb="";
                         	ss2>>path_thumb;
-		                	  try {
+								try {
 									Magick::Image thumb;
 									thumb.read(path);
 									thumb.resize("200x200>");
@@ -178,9 +185,8 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 							                "SET thumb=1 "
 							                "WHERE id=? " 
 							                << lastid << cppdb::exec;
-
-								  }
-								  catch( std::exception &error_ )
+									}
+								catch( std::exception &error_ )
 									{
 									}
                         }
@@ -194,22 +200,36 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         return;
                 }  
         }
-		thread_shared::prepare(c,id);            
+		std::string key = "flat_thread_" + sid;
+		if(cache().fetch_page(key))
+				return;
+        cache().add_trigger("thread_" + sid);
+		thread_shared::prepare(c,id);    
 		        
 		cppdb::result r;
 		r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file,thumb "
 		        "FROM messages WHERE thread_id=? "
 		        "ORDER BY id" << id;
-		
+		        
 		c.messages.reserve(10);
 		for(int i=0;r.next();i++) {
 		        c.messages.resize(i+1);
 		        r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file>>c.messages[i].thumb;
 		}
-		session()["view"]="flat";
-		
+		/*c.delete_msg_form.reserve(10);
+		std::stringstream ss3;
+		std::string tmpstring="";
+		for(int i=0;r.next();i++) {
+		        c.delete_msg_form.resize(i+1);
+				ss3<<c.messages[i].tid;
+				ss3>>tmpstring;
+				c.delete_msg_form[0].id_box.identification="123";
+				tmpstring="";
+		}
+		*/
+
 		render("flat_thread",c);
-		cache().store_page(key);
+		cache().store_page(key);		
 }
 
 auth::auth(cppcms::service &srv) : thread_shared(srv)
@@ -221,6 +241,7 @@ auth::auth(cppcms::service &srv) : thread_shared(srv)
 void auth::prepare(std::string smid)
 {
 		data::auth c;
+		using cppcms::locale::translate;
 		c.status=translate("You are not authentication.");
 		if(request().request_method()=="POST") {
 				c.form.load(context());

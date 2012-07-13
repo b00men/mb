@@ -26,7 +26,6 @@ public:
 
 class auth : public thread_shared {
 public:
-
         auth(cppcms::service &s);
         void prepare(std::string id);
 };
