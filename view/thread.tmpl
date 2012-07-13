@@ -3,7 +3,9 @@
 <% view base_thread uses data::thread_shared  extends master %>
 
 <% template msg_header(data::msg &m) %>
-<a name="p<%= m.msg_id %>"></a><span class="author"><%= m.author %></span>
+<a name="p<%= m.msg_id %>"></a>
+
+<span class="author"><%= m.author %></span>
 <%= m.date %>
 <% if (false) %>
 <a href="javascript:insert('&gt;&gt;<%= m.msg_id %>\n')">No.<%= m.msg_id %></a> | 

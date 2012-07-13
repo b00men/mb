@@ -16,7 +16,6 @@ master::master(cppcms::service &srv) : cppcms::application(srv)
 void master::init()
 {
         sql.open(conn_str_);
-        parent()->mapper().set_value("method","flat");
 }
 void master::clear()
 {
