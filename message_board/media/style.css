@@ -4,10 +4,11 @@ body{
 }
 
 #page {
-        max-width:900px;
-        margin:20px auto;
-        padding-left:10px;
-        padding-right:10px;
+	width:900px;
+	margin:20px auto;
+	padding-left:10px;
+	padding-right:10px;
+	word-wrap: break-word; 
 }
 
 #links, .forms table, .topics table{
@@ -25,12 +26,13 @@ body{
 }
 
 .forms,.post_flat,.post,#links,.topics,.file,blockquote,pre {
+	max-width:900px;
 	margin: 3px auto;
     border-style: solid;
     border-width: 1px;
     background-color: rgb(255, 255, 255);
     border-color: rgb(221, 221, 221);
-    border-radius: 5px 5px 5px 5px;  
+    border-radius: 5px 5px 5px 5px;
 }
 
 .forms, .topics{
@@ -41,6 +43,10 @@ body{
 	float: left;
 	margin: 5px 10px;
 	padding: 8px 8px 5px 8px;
+}
+
+a img {
+  border:0;
 }
 
 .file_t,.post_title {
