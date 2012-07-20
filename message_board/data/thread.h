@@ -34,15 +34,10 @@ struct login_form : public cppcms::form {
         login_form();
 };
 
-struct delete_msg_form : public cppcms::form{
-        cppcms::widgets::checkbox id_box;
-        cppcms::widgets::submit del_msg;
+struct delete_msg_form : public cppcms::form, public msg {
+        cppcms::widgets::checkbox slct[1000];
         delete_msg_form();
 };
-
-//struct msgs : public msg, public delete_msg_form {
-  //      msgs() {}
-//};
 
 class thread_shared : public master
 {
@@ -56,10 +51,12 @@ public:
         std::string (*text2html)(std::string const &);
 };
 
-class flat_thread : public thread_shared , public msg {
+class flat_thread : public thread_shared , public delete_msg_form {
 public:
         std::vector<msg> messages;
         reply_form form;
+        delete_msg_form dmes_form;
+        bool is_admin;
 };
 
 class auth : public thread_shared{

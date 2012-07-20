@@ -21,9 +21,6 @@ No.<%= m.msg_id %>
 <% end %>
 
 <% template msg(data::msg &m) %>
-<tr><td>
-<div class="post_flat">
-<div class="post_title">
 <% include msg_header(m) %>
 </div>
 <% if (!(m.file=="")) %>
@@ -39,7 +36,6 @@ No.<%= m.msg_id %>
 <% end %>
 <div class="comment">
 <% include msg_cnt(m) %>
-</div></div></td></tr>
 <% end %>
 
 <% template title() %><% gt "Disussion: {1}" using title %><% end template %>
@@ -75,13 +71,25 @@ No.<%= m.msg_id %>
 
 
 <% template body() %>
+        <form action="" method="post" enctype="multipart/form-data" ><% csrf %>
         <% foreach message in messages %>
                 <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
-                <% item %><table class="posts"><% include msg(message) %></table><% end %>
+                <% item %><table class="posts">
+                <tr><td>
+				<div class="post_flat">
+				<div class="post_title">
+				<% if is_admin %>
+				<input name="<% c++ out()<<message.msg_id; %>" value="<% c++ out()<<message.tid; %>" type="checkbox">
+                <% end %>
+                <% include msg(message) %>
+                </div></div></td></tr>
+                </table><% end %>
                 
         <% empty %>
                 <span class="title"><h2><% gt "There are no comments." %></h2></span>
+        
         <% end %>
+        </form>
 		<span class="title"><h2><% gt "Create New Post" %></h2></span>
 		<% include postform() %>
    		<br />

@@ -45,13 +45,12 @@ login_form::login_form()
 
 delete_msg_form::delete_msg_form()
 {
-        using cppcms::locale::translate;
-        del_msg.value(translate("Delete selected messages"));
-        id_box.identification("value"); // value of "value", default="y". Recomendated id thread.
-        id_box.name("name"); // value of "name". Recomendated id post.
-        id_box.value(0); // state of checkbox
-        add(id_box);
-        add(del_msg);
+	    for(int i=0; i<1000;++i){
+			//slct[i].identification(); // value of "value", default="y". Recomendated id thread.
+			//slct[i].name("name"); // value of "name". Recomendated id post.
+			//slct[i].value(0); // state of checkbox
+	    	add(slct[i]);
+	    	}        	
 }
 
 } // data
@@ -60,13 +59,13 @@ delete_msg_form::delete_msg_form()
 namespace {
         std::string text2html(std::string const &s)
         {
-				std::string res=s;
+				std::string out;
 				markdown::Document doc;
 				std::stringstream ss;
-				doc.read(res);
+				doc.read(s);
 				doc.write(ss);	
-				res = ss.str();
-                return res;
+				out = ss.str();
+                return out;
         }
 }
 
@@ -109,6 +108,8 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 		data::flat_thread c;
         int mid = 0;
         int id = atoi(sid.c_str());
+		c.is_admin=((session().is_set("login"))&&(session()["login"]=="true"))?(1):(0);
+		//c.is_admin=0;
         if(request().request_method()=="POST") {
 
                 c.form.load(context());
@@ -188,6 +189,7 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 									}
 								catch( std::exception &error_ )
 									{
+									std::cout<<"Error resize image! Where:\nInput image: "<<path<<"\nOutput image: "<<path_thumb;
 									}
                         }
 
@@ -198,7 +200,44 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         response().set_redirect_header(url("/user_thread",id));
                         c.form.clear();
                         return;
-                }  
+                }
+
+				if(c.is_admin) {
+					cppdb::result r;
+					r=sql<< "SELECT id "
+							"FROM messages WHERE thread_id=? "
+							"ORDER BY id" << id;
+		
+					c.messages.reserve(10);
+					std::string smeg_id="";
+					int size_mes=0;
+					bool change=0;
+					for(int i=0;r.next();i++) {
+							
+							r>>smeg_id;
+							c.dmes_form.slct[i].identification(sid);
+							c.dmes_form.slct[i].name(smeg_id);
+							size_mes=i+1;
+					}
+		            c.dmes_form.load(context());					
+					for(int i=0; i<size_mes; ++i){
+						if (c.dmes_form.slct[i].value()) {
+						change=1;
+                        sql<<   "DELETE "
+                        		"FROM messages "
+                                "WHERE id=? " 
+                                << c.dmes_form.slct[i].name() << cppdb::exec;
+						}
+					}
+					if(change) {
+		                cache().rise("thread_" + sid);
+		                cache().rise("remove_thread");
+
+		                response().set_redirect_header(url("/user_thread",id));
+		                c.form.clear();
+		                return;
+                    }
+				}
         }
 		std::string key = "flat_thread_" + sid;
 		if(cache().fetch_page(key))
@@ -210,24 +249,14 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 		r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file,thumb "
 		        "FROM messages WHERE thread_id=? "
 		        "ORDER BY id" << id;
-		        
+		
 		c.messages.reserve(10);
 		for(int i=0;r.next();i++) {
 		        c.messages.resize(i+1);
 		        r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file>>c.messages[i].thumb;
-		}
-		/*c.delete_msg_form.reserve(10);
-		std::stringstream ss3;
-		std::string tmpstring="";
-		for(int i=0;r.next();i++) {
-		        c.delete_msg_form.resize(i+1);
-				ss3<<c.messages[i].tid;
-				ss3>>tmpstring;
-				c.delete_msg_form[0].id_box.identification="123";
-				tmpstring="";
-		}
-		*/
+		}		
 
+		
 		render("flat_thread",c);
 		cache().store_page(key);		
 }
@@ -263,5 +292,4 @@ void auth::prepare(std::string smid)
 }
 
 } // namespace apps
-
 
