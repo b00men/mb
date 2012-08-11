@@ -162,7 +162,7 @@ void forums::prepare(std::string page)
                         cache().rise("new_thread");
                         tr.commit();
 
-                        response().set_redirect_header(url("/user_thread",tid));
+                        response().set_redirect_header(url("/all_thread",tid));
                         c.form.clear();
                         return;
                 }

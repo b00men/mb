@@ -17,10 +17,15 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
                 "/{1}",
                 "(/(\\d+)?)?",2);
 
-        attach( new flat_thread(s),
-                "flat_thread",
-                "/flat/{1}",
-                "/flat/(\\d+)",1);
+        attach( new user_thread(s),
+                "user_thread",
+                "/thread/{1}",
+                "/thread/(\\d+)",1);
+
+        attach( new adm_thread(s),
+                "adm_thread",
+                "/adm_thread/{1}",
+                "/adm_thread/(\\d+)",1);
 
         attach( new auth(s),
                 "admin",
@@ -29,7 +34,7 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
         
         // Generic mapping
         mapper().root(settings().get<std::string>("mb.root"));
-        mapper().assign("user_thread","/flat/{1}");
+        mapper().assign("all_thread","/{method}/{1}");
 }
 
 } // apps

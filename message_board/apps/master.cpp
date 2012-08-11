@@ -16,6 +16,12 @@ master::master(cppcms::service &srv) : cppcms::application(srv)
 void master::init()
 {
         sql.open(conn_str_);
+        if( session().is_set("login") && session()["login"]=="true" ) { 
+                parent()->mapper().set_value("method","adm_thread");
+        }
+        else {
+                parent()->mapper().set_value("method","thread");
+        }
 }
 void master::clear()
 {

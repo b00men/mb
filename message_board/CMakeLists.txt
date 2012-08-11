@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(message_board)
 
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}) 
 
 # Options 
 

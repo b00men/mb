@@ -45,12 +45,32 @@ login_form::login_form()
 
 delete_msg_form::delete_msg_form()
 {
-	    for(int i=0; i<1000;++i){
-			//slct[i].identification(); // value of "value", default="y". Recomendated id thread.
-			//slct[i].name("name"); // value of "name". Recomendated id post.
-			//slct[i].value(0); // state of checkbox
-	    	add(slct[i]);
-	    	}        	
+        //using cppcms::locale::translate;
+        //submit.value(translate("Delete selected messages"));
+	    /*for(int i=0; i<1000;++i){
+			//boxes[i].identification(); // value of "value", default="y". Recomendated id thread.
+			//boxes[i].name("name"); // value of "name". Recomendated id post.
+			//boxes[i].value(0); // state of checkbox
+	    	add(boxes[0]);
+	    	}*/
+		//boxes.resize(10);  
+		//for(int i=0;i<10;i++) {  
+			//cppcms::widgets::checkbox boxes[i];  
+			//*this & boxes[i]; // Now vector would not reallocate its members  
+		//}  
+		//for(int i=0;i<10;i++) {  
+		  // slct.push_back(cppcms::widgets::checkbox());  
+		//} 
+		//*this & submit;         	
+		//add(submit);
+		add(checkboxes);
+		for(int i=0;i<10;i++) {
+			cppcms::widgets::checkbox *box = new cppcms::widgets::checkbox();
+			checkboxes.attach(box); // transfer ownership and register to parent
+			//boxes.identification("ohoho!");
+			//box->message(...);
+			boxes.push_back(box);
+		}
 }
 
 } // data
@@ -96,22 +116,19 @@ bool thread_shared::prepare(data::thread_shared &c,int id)
 
 }
 
-flat_thread::flat_thread(cppcms::service &s) : thread_shared(s)
+user_thread::user_thread(cppcms::service &s) : thread_shared(s)
 {
-        dispatcher().assign(".*",&flat_thread::prepare,this,0);
+        dispatcher().assign(".*",&user_thread::prepare,this,0);
         mapper().assign("{1}");
 }
 
 
-void flat_thread::prepare(std::string sid) // sid (id) - id of thread
+void user_thread::prepare(std::string sid) // sid (id) - id of thread
 {
-		data::flat_thread c;
+		data::user_thread c;
         int mid = 0;
         int id = atoi(sid.c_str());
-		c.is_admin=((session().is_set("login"))&&(session()["login"]=="true"))?(1):(0);
-		//c.is_admin=0;
         if(request().request_method()=="POST") {
-
                 c.form.load(context());
                 if(c.form.validate()) {
                         cppdb::transaction tr(sql);
@@ -197,49 +214,12 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
                         cache().rise("new_thread");
                         tr.commit();
 
-                        response().set_redirect_header(url("/user_thread",id));
+                        response().set_redirect_header(url("/all_thread",id));
                         c.form.clear();
                         return;
                 }
-
-				if(c.is_admin) {
-					cppdb::result r;
-					r=sql<< "SELECT id "
-							"FROM messages WHERE thread_id=? "
-							"ORDER BY id" << id;
-		
-					c.messages.reserve(10);
-					std::string smeg_id="";
-					int size_mes=0;
-					bool change=0;
-					for(int i=0;r.next();i++) {
-							
-							r>>smeg_id;
-							c.dmes_form.slct[i].identification(sid);
-							c.dmes_form.slct[i].name(smeg_id);
-							size_mes=i+1;
-					}
-		            c.dmes_form.load(context());					
-					for(int i=0; i<size_mes; ++i){
-						if (c.dmes_form.slct[i].value()) {
-						change=1;
-                        sql<<   "DELETE "
-                        		"FROM messages "
-                                "WHERE id=? " 
-                                << c.dmes_form.slct[i].name() << cppdb::exec;
-						}
-					}
-					if(change) {
-		                cache().rise("thread_" + sid);
-		                cache().rise("remove_thread");
-
-		                response().set_redirect_header(url("/user_thread",id));
-		                c.form.clear();
-		                return;
-                    }
-				}
         }
-		std::string key = "flat_thread_" + sid;
+		std::string key = "user_thread_" + sid;
 		if(cache().fetch_page(key))
 				return;
         cache().add_trigger("thread_" + sid);
@@ -257,9 +237,183 @@ void flat_thread::prepare(std::string sid) // sid (id) - id of thread
 		}		
 
 		
-		render("flat_thread",c);
+		render("user_thread",c);
 		cache().store_page(key);		
 }
+
+adm_thread::adm_thread(cppcms::service &s) : thread_shared(s)
+{
+        dispatcher().assign(".*",&adm_thread::prepare,this,0);
+        mapper().assign("{1}");
+}
+
+
+void adm_thread::prepare(std::string sid) // sid (id) - id of thread
+{
+		data::adm_thread c;
+        int mid = 0;
+        int id = atoi(sid.c_str());
+		c.is_admin=((session().is_set("login"))&&(session()["login"]=="true"))?(1):(0);
+		if (!c.is_admin)
+		{
+            response().make_error_response(404);
+            return;
+		}
+        	if(request().request_method()=="POST") {
+
+                c.form.load(context());
+                if(c.form.validate()) {
+                    cppdb::transaction tr(sql);
+                    cppdb::statement st;
+                    
+					std::string path="";
+					std::string path_thumb="";
+					
+                	if(c.form.image.set())
+                    {
+	                	path = "txt";
+	                	if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
+	                	if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
+	                	if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
+	                	if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
+	                	if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
+	                	if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
+	                	if(c.form.image.value()->mime() == "audio/vnd.wave") path="wav";
+	                	if(c.form.image.value()->mime() == "text/css") path="css";
+	                	if(c.form.image.value()->mime() == "text/csv") path="csv";
+	                	if(c.form.image.value()->mime() == "text/html") path="html";
+	                	if(c.form.image.value()->mime() == "text/javascript") path="js";
+	                	if(c.form.image.value()->mime() == "text/xml") path="xml";
+	                	if(c.form.image.value()->mime() == "video/mpeg") path="mpg";
+	                	if(c.form.image.value()->mime() == "video/mp4") path="mp4";
+	                	if(c.form.image.value()->mime() == "video/ogg") path="ogg";
+	                	if(c.form.image.value()->mime() == "video/webm") path="webm";
+	                	if(c.form.image.value()->mime() == "video/x-matroska") path="mkv";
+	                	if(c.form.image.value()->mime() == "video/x-ms-wmv") path="wmv";
+	                	if(c.form.image.value()->mime() == "video/x-flv") path="flv";
+	                	if(c.form.image.value()->mime() == "application/pdf") path="pdf";
+	                	if(c.form.image.value()->mime() == "application/zip") path="zip";
+	                	if(c.form.image.value()->mime() == "application/x-gzip") path="gz";
+	                	if(c.form.image.value()->mime() == "application/x-tar") path="tar";
+	                	if(c.form.image.value()->mime() == "application/x-deb") path="deb";
+	                	if(c.form.image.value()->mime() == "application/x-rar") path="rar";
+                    }
+                    
+                    st=sql<<   "INSERT INTO messages(reply_to,thread_id,author,content,file) "
+                            "VALUES(?,?,?,?,?) " 
+                            << mid << id << c.form.author.value() << c.form.comment.value() 
+                            << path << cppdb::exec;
+                            
+                    int lastid=st.last_insert_id();
+
+                    st=sql<<   "UPDATE threads "
+                            "SET date=NOW() "
+                            "WHERE id=? " 
+                            << id << cppdb::exec;
+                                   
+                    if(c.form.image.set())
+                    {
+                    	std::stringstream ss;
+                    	ss<<settings().get<std::string>("mb.uploads")<<id<<"_"<<lastid<<"."<<path;
+                		path="";
+                    	ss>>path;
+					    c.form.image.value()->save_to(path);
+                    }
+
+                    if(path_thumb!="")
+                    {
+                    	std::stringstream ss2;
+                    	ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<id<<"_"<<lastid<<"."<<path_thumb;
+                		path_thumb="";
+                    	ss2>>path_thumb;
+							try {
+								Magick::Image thumb;
+								thumb.read(path);
+								thumb.resize("200x200>");
+								thumb.write(path_thumb);
+						        st=sql<<   "UPDATE messages "
+						                "SET thumb=1 "
+						                "WHERE id=? " 
+						                << lastid << cppdb::exec;
+								}
+							catch( std::exception &error_ )
+								{
+								std::cout<<"Error resize image! Where:\nInput image: "<<path<<"\nOutput image: "<<path_thumb;
+								}
+                    }
+
+                    cache().rise("thread_" + sid);
+                    cache().rise("new_thread");
+                    tr.commit();
+
+                    response().set_redirect_header(url("/all_thread",id));
+                    c.form.clear();
+                    return;
+                }
+
+
+				cppdb::result r;
+				r=sql<< "SELECT id "
+						"FROM messages WHERE thread_id=? "
+						"ORDER BY id" << id;
+						
+				std::string smeg_id="";
+				int size_mes=0;
+				bool change=0;
+				//c.dmes_form.boxes.reserve(10);
+				for(int i=0;r.next();i++) {
+						//c.dmes_form.boxes.resize(i+1);
+						//c.dmes_form.boxes.push_back(cppcms::widgets::checkbox());
+						std::cout<<"size:"<<c.dmes_form.boxes.size()<<"\n";
+						std::cout<<"size:"<<c.dmes_form.boxes.max_size()<<"\n";							
+						r>>smeg_id;
+						//c.dmes_form.boxes[i].identification(sid);
+						//c.dmes_form.boxes[i].name(smeg_id);
+						size_mes=i+1;
+	            c.dmes_form.load(context());					
+				/*for(int i=0; i<size_mes; ++i){
+					//std::cout<<c.dmes_form.boxes[i].name()<<" - "<<c.dmes_form.boxes[i].identification()<<" - "<<c.dmes_form.boxes[i].value()<<"\n";
+					if (c.dmes_form.boxes[i].value()) {
+					change=1;
+                    sql<<   "DELETE "
+                    		"FROM messages "
+                            "WHERE id=? " 
+                            << c.dmes_form.boxes[i].name() << cppdb::exec;
+					}
+				}*/
+				if(change) {
+	                cache().rise("thread_" + sid);
+	                cache().rise("remove_thread");
+	                
+
+	                response().set_redirect_header(url("/all_thread",id));
+	                c.form.clear();
+	                return;
+                }
+			}
+        }
+		std::string key = "adm_thread_" + sid;
+		if(cache().fetch_page(key))
+				return;
+        cache().add_trigger("thread_" + sid);
+		thread_shared::prepare(c,id);    
+		        
+		cppdb::result r;
+		r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file,thumb "
+		        "FROM messages WHERE thread_id=? "
+		        "ORDER BY id" << id;
+		
+		c.messages.reserve(10);
+		for(int i=0;r.next();i++) {
+		        c.messages.resize(i+1);
+		        r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file>>c.messages[i].thumb;
+		}		
+
+		
+		render("adm_thread",c);
+		cache().store_page(key);		
+}
+
 
 auth::auth(cppcms::service &srv) : thread_shared(srv)
 {

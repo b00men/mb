@@ -44,7 +44,7 @@ No.<%= m.msg_id %>
 <% include master::links() %>
        
                <% if (false) %>
-               | <a href="<% url "/flat_thread" using thread_id %>"><% gt "Flat View"%></a> |
+               | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
                  <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
                <% end %>
         
@@ -53,7 +53,45 @@ No.<%= m.msg_id %>
 <% end view %>
 
 
-<% view flat_thread uses data::flat_thread  extends base_thread %>
+<% view user_thread uses data::user_thread  extends base_thread %>
+
+<% template postform() %>
+        <div class="forms"><a name="end"></a>
+        <form id="postform"  action="#end" method="post" enctype="multipart/form-data" ><% csrf %>
+        <table>
+                <% form as_table form.author %>
+                <% form as_table form.comment %>
+                <% form as_table form.image %>
+                <% form as_table form.send %>
+        </table>
+        </form>
+        <% include master::note() %>
+        </div>
+<% end template %>
+
+
+<% template body() %>
+        <% foreach message in messages %>
+                <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
+                <% item %><table class="posts">
+                <tr><td>
+				<div class="post_flat">
+				<div class="post_title">
+                <% include msg(message) %>
+                </div></div></td></tr>
+                </table><% end %>
+                
+        <% empty %>
+                <span class="title"><h2><% gt "There are no comments." %></h2></span>
+        <% end %>
+		<span class="title"><h2><% gt "Create New Post" %></h2></span>
+		<% include postform() %>
+   		<br />
+<% end template %>
+
+<% end view %>
+
+<% view adm_thread uses data::adm_thread  extends base_thread %>
 
 <% template postform() %>
         <div class="forms"><a name="end"></a>
@@ -76,12 +114,11 @@ No.<%= m.msg_id %>
                 <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
                 <% item %><table class="posts">
                 <tr><td>
-				<div class="post_flat">
-				<div class="post_title">
-				<% if is_admin %>
-				<input name="<% c++ out()<<message.msg_id; %>" value="<% c++ out()<<message.tid; %>" type="checkbox">
-                <% end %>
+                <div class="post_flat">
+                <div class="post_title">
+                <input name="<% c++ out()<<message.msg_id; %>" value="<% c++ out()<<message.tid; %>" type="checkbox">
                 <% include msg(message) %>
+                <% form input dmes_form.submit %>
                 </div></div></td></tr>
                 </table><% end %>
                 
@@ -90,9 +127,9 @@ No.<%= m.msg_id %>
         
         <% end %>
         </form>
-		<span class="title"><h2><% gt "Create New Post" %></h2></span>
-		<% include postform() %>
-   		<br />
+        <span class="title"><h2><% gt "Create New Post" %></h2></span>
+        <% include postform() %>
+        <br />
 <% end template %>
 
 <% end view %>
