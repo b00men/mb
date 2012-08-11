@@ -17,11 +17,17 @@ public:
 
 };
 
-class flat_thread : public thread_shared {
+class user_thread : public thread_shared {
 public:
 
-        flat_thread(cppcms::service &s);
+        user_thread(cppcms::service &s);
         void prepare(std::string id); 
+};
+
+class adm_thread : public thread_shared {
+public:
+        adm_thread(cppcms::service &s);
+        void prepare(std::string id);
 };
 
 class auth : public thread_shared {

@@ -34,8 +34,10 @@ struct login_form : public cppcms::form {
         login_form();
 };
 
-struct delete_msg_form : public cppcms::form, public msg {
-        cppcms::widgets::checkbox slct[1000];
+struct delete_msg_form : public cppcms::form {
+		cppcms::form checkboxes;
+		std::vector<cppcms::widgets::checkbox *> boxes;
+        cppcms::widgets::submit submit;
         delete_msg_form();
 };
 
@@ -51,7 +53,15 @@ public:
         std::string (*text2html)(std::string const &);
 };
 
-class flat_thread : public thread_shared , public delete_msg_form {
+class user_thread : public thread_shared , public msg , public delete_msg_form {
+public:
+        std::vector<msg> messages;
+        reply_form form;
+        delete_msg_form dmes_form;
+        bool is_admin;
+};
+
+class adm_thread : public thread_shared , public msg , public delete_msg_form {
 public:
         std::vector<msg> messages;
         reply_form form;
