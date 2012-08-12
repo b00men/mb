@@ -29,6 +29,20 @@ namespace data {
                 new_topic_form form;
         };
 
+        class adm_forums : public master{
+        public:
+                adm_forums() : next(0),prev(0),prevneg(0) {}
+                struct topic {
+                        topic() : id(0) {}
+                        std::string title;
+                        std::string date;
+                        int id;
+                };
+                std::vector<topic> topics;
+                int next,prev,prevneg;
+                new_topic_form form;
+        };
+
 }
 
 #endif
