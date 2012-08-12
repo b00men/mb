@@ -57,12 +57,6 @@ msgstr "Ответ"
 msgid "Disussion: {1}"
 msgstr "Обсуждение: {1}"
 
-msgid "Flat View"
-msgstr "Плоский вид"
-
-msgid "Tree View"
-msgstr "Вид дерева"
-
 msgid "There is no comments"
 msgstr "Сообщений нет"
 
@@ -92,3 +86,39 @@ msgstr "Обсуждение"
 
 msgid "Last Post"
 msgstr "Последнее сообщение"
+
+msgid "Authentication"
+msgstr "Авторизация"
+
+msgid "Login"
+msgstr "Логин"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Login success!"
+msgstr "Вход успешно выполнен!"
+
+msgid "Login incorect!"
+msgstr "Не корректный вход"
+
+msgid "You are not authentication."
+msgstr "Вы не авторезированы"
+
+msgid "Admin view"
+msgstr "Вид администратора"
+
+msgid "Section of the edit"
+msgstr "Секция редактирования"
+
+msgid "Sign in"
+msgstr "Войти"
+
+msgid "Delete selected messages"
+msgstr "Удалить выбранные сообщения"
+	
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Delete ONLY file(s)"
+msgstr "Удалить ТОЛЬКО файл(ы)"

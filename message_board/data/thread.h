@@ -38,6 +38,7 @@ struct delete_msg_form : public cppcms::form {
 	cppcms::form checkboxes;
 	std::vector<cppcms::widgets::checkbox *> boxes;
         cppcms::widgets::submit submit;
+        cppcms::widgets::checkbox onlyfile;
         delete_msg_form();
 };
 
