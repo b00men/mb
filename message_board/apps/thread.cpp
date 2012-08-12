@@ -193,7 +193,7 @@ void user_thread::prepare(std::string sid) // sid (id) - id of thread
                         cache().rise("new_thread");
                         tr.commit();
 
-                        response().set_redirect_header(url("/all_thread",id));
+                        response().set_redirect_header(url("/user_thread",id));
                         c.form.clear();
                         return;
                 }
@@ -325,7 +325,7 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
                     cache().rise("new_thread");
                     tr.commit();
 
-                    response().set_redirect_header(url("/all_thread",id));
+                    response().set_redirect_header(url("/adm_thread",id));
                     c.form.clear();
                     return;
                 }
@@ -379,7 +379,7 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
 	                cache().rise("thread_" + sid);
 	                cache().rise("remove_thread");
 
-	                response().set_redirect_header(url("/all_thread",id));
+	                response().set_redirect_header(url("/adm_thread",id));
 	                c.form.clear();
 	                return;
                 }

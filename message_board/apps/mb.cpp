@@ -17,6 +17,11 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
                 "/{1}",
                 "(/(\\d+)?)?",2);
 
+        attach( new adm_forums(s),
+                "adm_forums",
+                "/adm_forums/{1}",
+                "(/adm_forums/(\\d+)?)?",2);
+
         attach( new user_thread(s),
                 "user_thread",
                 "/thread/{1}",
@@ -34,7 +39,6 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
         
         // Generic mapping
         mapper().root(settings().get<std::string>("mb.root"));
-        mapper().assign("all_thread","/{method}/{1}");
 }
 
 } // apps

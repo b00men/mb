@@ -40,20 +40,20 @@ No.<%= m.msg_id %>
 
 <% template title() %><% gt "Disussion: {1}" using title %><% end template %>
 
-<% template links() %>
-<% include master::links() %>
-       
-               <% if (false) %>
-               | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
-                 <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
-               <% end %>
-        
-<% end %>
 
 <% end view %>
 
 
 <% view user_thread uses data::user_thread  extends base_thread %>
+
+<% template links() %>
+<% include master::links() %>
+        <a href="<% url "/forums"%>"><% gt "Home" %></a>
+        <% if (false) %>
+        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
+        <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
+        <% end %>
+<% end %>
 
 <% template postform() %>
         <div class="forms"><a name="end"></a>
@@ -91,7 +91,17 @@ No.<%= m.msg_id %>
 
 <% end view %>
 
+
 <% view adm_thread uses data::adm_thread  extends base_thread %>
+
+<% template links() %>
+<% include master::links() %>
+        <a href="<% url "/adm_forums"%>"><% gt "Home" %></a>
+        <% if (false) %>
+        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
+        <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
+        <% end %>
+<% end %>
 
 <% template postform() %>
         <div class="forms"><a name="end"></a>
@@ -119,6 +129,7 @@ No.<%= m.msg_id %>
         <% foreach message in messages %>
                 <form id="adminform" action="" method="post" enctype="multipart/form-data" ><% csrf %>
                 <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
+                <span class="title"><h3><% gt "Admin view" %></h3></span>
 
                 <% item %><table class="posts">
                 <tr><td>
@@ -149,6 +160,8 @@ No.<%= m.msg_id %>
 
 <% template links() %>
         <% include master::links() %>
+        <a href="<% url "/forums"%>"><% gt "Home" %></a>
+        | <a href="<% url "/adm_forums"%>"><% gt "Admin view" %></a>
 <% end %>
 
 <% template body() %>

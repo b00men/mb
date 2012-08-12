@@ -36,6 +36,7 @@
 
 <% template links() %>
         <% include master::links() %>
+        <a href="<% url "/forums"%>"><% gt "Home" %></a>
         <% if next %>
         | <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
         <% end %>
@@ -46,4 +47,57 @@
 
 
 <% end view %>
+
+
+<% view adm_forums uses data::adm_forums  extends master %>
+<% template body() %>
+        <span class="title"><h2><% gt "List of Disussion" %></h2></span>
+        <span class="title"><h3><% gt "Admin view" %></h3></span>
+        <% foreach topic in topics %>
+                        <div class="topics">
+                <table width=100%>
+                <tr>
+                <td align=left><% gt "Thread" %></td>
+                <td align=right><% gt "Last Post" %></td>
+                </tr>
+                <tr><td colspan=2><hr></td></tr>
+                <% item %>
+                <tr>
+                <td align=left><a href="<% url "/adm_thread" using topic.id %>"><%= topic.title %></a></td>
+                <td align=right><%= topic.date %></td>
+                </tr>
+                <% end %>
+                </table>
+                </div>
+        <% empty %>
+                <h2><% gt "No Topics" %></h2>
+        <% end %>
+        <br />
+        <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
+        <div class="forms"><a name="end"></a>
+        <form action="<% url "/adm_forums" %>#end" method="post" enctype="multipart/form-data" ><% csrf script %>
+        <table>
+        <% form as_table form %>
+        </table>
+        </form>
+        <% include master::note() %>
+        </div>
+        <br />
+<% end template %>
+
+<% template links() %>
+        <% include master::links() %>
+        <a href="<% url "/adm_forums"%>"><% gt "Home" %></a>
+        <% if next %>
+        | <a href="<% url "/adm_forums" using next %>"><% gt "Next Page" %></a>
+        <% end %>
+        <% if prevneg %>
+        | <a href="<% url "/adm_forums" using prev  %>"><% gt "Prev Page" %></a>
+        <% end %>
+        | <a href="<% url "/admin"%>"><% gt "Login" %></a>
+<% end template %>
+
+
+<% end view %>
+
 <% end skin %>
