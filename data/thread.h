@@ -35,8 +35,8 @@ struct login_form : public cppcms::form {
 };
 
 struct delete_msg_form : public cppcms::form {
-		cppcms::form checkboxes;
-		std::vector<cppcms::widgets::checkbox *> boxes;
+	cppcms::form checkboxes;
+	std::vector<cppcms::widgets::checkbox *> boxes;
         cppcms::widgets::submit submit;
         delete_msg_form();
 };

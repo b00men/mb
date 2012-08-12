@@ -107,26 +107,34 @@ No.<%= m.msg_id %>
         </div>
 <% end template %>
 
+<% template adminform() %>
+        <div class="forms">
+        <table>
+        <% form as_table dmes_form.submit %>
+        </table>
+        </div>
+<% end template %>
 
 <% template body() %>
-        <form action="" method="post" enctype="multipart/form-data" ><% csrf %>
         <% foreach message in messages %>
+                <form id="adminform" action="" method="post" enctype="multipart/form-data" ><% csrf %>
                 <span class="title"><h2><% gt "Lists of the posts" %></h2></span>
+
                 <% item %><table class="posts">
                 <tr><td>
                 <div class="post_flat">
                 <div class="post_title">
                 <input name="<% c++ out()<<message.msg_id; %>" value="<% c++ out()<<message.tid; %>" type="checkbox">
                 <% include msg(message) %>
-                <% form input dmes_form.submit %>
                 </div></div></td></tr>
                 </table><% end %>
-                
+
+                <span class="title"><h2><% gt "Section of the edit" %></h2></span>
+                <% include adminform() %>
+                </form>
         <% empty %>
                 <span class="title"><h2><% gt "There are no comments." %></h2></span>
-        
         <% end %>
-        </form>
         <span class="title"><h2><% gt "Create New Post" %></h2></span>
         <% include postform() %>
         <br />

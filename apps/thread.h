@@ -2,8 +2,6 @@
 #define APPS_THREAD_H
 #include <cppcms/application.h>
 #include <string>
-
-
 #include <apps/master.h>
 #include <data/thread.h>
 

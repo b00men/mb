@@ -45,32 +45,11 @@ login_form::login_form()
 
 delete_msg_form::delete_msg_form()
 {
-        //using cppcms::locale::translate;
-        //submit.value(translate("Delete selected messages"));
-	    /*for(int i=0; i<1000;++i){
-			//boxes[i].identification(); // value of "value", default="y". Recomendated id thread.
-			//boxes[i].name("name"); // value of "name". Recomendated id post.
-			//boxes[i].value(0); // state of checkbox
-	    	add(boxes[0]);
-	    	}*/
-		//boxes.resize(10);  
-		//for(int i=0;i<10;i++) {  
-			//cppcms::widgets::checkbox boxes[i];  
-			//*this & boxes[i]; // Now vector would not reallocate its members  
-		//}  
-		//for(int i=0;i<10;i++) {  
-		  // slct.push_back(cppcms::widgets::checkbox());  
-		//} 
-		//*this & submit;         	
-		//add(submit);
+        using cppcms::locale::translate;
+        submit.value(translate("Delete"));
+        submit.message(translate("Delete selected messages"));        	
+		add(submit);
 		add(checkboxes);
-		for(int i=0;i<10;i++) {
-			cppcms::widgets::checkbox *box = new cppcms::widgets::checkbox();
-			checkboxes.attach(box); // transfer ownership and register to parent
-			//boxes.identification("ohoho!");
-			//box->message(...);
-			boxes.push_back(box);
-		}
 }
 
 } // data
@@ -353,44 +332,57 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
 
 
 				cppdb::result r;
-				r=sql<< "SELECT id "
+				r=sql<< "SELECT id,file "
 						"FROM messages WHERE thread_id=? "
 						"ORDER BY id" << id;
 						
 				std::string smeg_id="";
+				std::string smeg_file="";
 				int size_mes=0;
 				bool change=0;
-				//c.dmes_form.boxes.reserve(10);
+				c.dmes_form.boxes.reserve(10);
 				for(int i=0;r.next();i++) {
-						//c.dmes_form.boxes.resize(i+1);
-						//c.dmes_form.boxes.push_back(cppcms::widgets::checkbox());
-						std::cout<<"size:"<<c.dmes_form.boxes.size()<<"\n";
-						std::cout<<"size:"<<c.dmes_form.boxes.max_size()<<"\n";							
-						r>>smeg_id;
-						//c.dmes_form.boxes[i].identification(sid);
-						//c.dmes_form.boxes[i].name(smeg_id);
-						size_mes=i+1;
-	            c.dmes_form.load(context());					
-				/*for(int i=0; i<size_mes; ++i){
-					//std::cout<<c.dmes_form.boxes[i].name()<<" - "<<c.dmes_form.boxes[i].identification()<<" - "<<c.dmes_form.boxes[i].value()<<"\n";
-					if (c.dmes_form.boxes[i].value()) {
-					change=1;
-                    sql<<   "DELETE "
-                    		"FROM messages "
-                            "WHERE id=? " 
-                            << c.dmes_form.boxes[i].name() << cppdb::exec;
+					r>>smeg_id>>smeg_file;
+					c.dmes_form.boxes.resize(i+1);
+					cppcms::widgets::checkbox *box = new cppcms::widgets::checkbox();
+					c.dmes_form.checkboxes.attach(box); // transfer ownership and register to parent
+					box->identification(sid);
+					box->name(smeg_id);
+					box->message(smeg_file);
+					c.dmes_form.boxes.push_back(box);
+					size_mes=i+1;						
+				}
+	            c.dmes_form.load(context());			
+				for(int i=1; i<size_mes+1; ++i){
+					if (c.dmes_form.boxes[i]->value()) {
+						change=1;
+	                    sql<<   "DELETE "
+	                    		"FROM messages "
+	                            "WHERE id=? " 
+	                            << c.dmes_form.boxes[i]->name() << cppdb::exec;
+						if (smeg_file.length())
+						{
+							std::stringstream ss;
+							std::stringstream ss2;
+							std::string delpath="";
+                    		ss<<settings().get<std::string>("mb.uploads")<<sid<<"_"<<c.dmes_form.boxes[i]->name()<<"."<<c.dmes_form.boxes[i]->message();
+							ss>>delpath;
+							std::remove(delpath.c_str());
+							ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<sid<<"_"<<c.dmes_form.boxes[i]->name()<<"."<<c.dmes_form.boxes[i]->message();
+							delpath="";
+							ss2>>delpath;
+							std::remove(delpath.c_str());
+						}
 					}
-				}*/
+				}
 				if(change) {
 	                cache().rise("thread_" + sid);
 	                cache().rise("remove_thread");
-	                
 
 	                response().set_redirect_header(url("/all_thread",id));
 	                c.form.clear();
 	                return;
                 }
-			}
         }
 		std::string key = "adm_thread_" + sid;
 		if(cache().fetch_page(key))
