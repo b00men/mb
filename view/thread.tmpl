@@ -7,13 +7,8 @@
 
 <span class="author"><%= m.author %></span>
 <%= m.date %>
-<% if (false) %>
-<a href="javascript:insert('&gt;&gt;<%= m.msg_id %>\n')">No.<%= m.msg_id %></a> | 
-<a href="<% url "/comment" using m.msg_id %>"><% gt "Reply" %></a>
-<% else %>
 No.<%= m.msg_id %>
 <a href="javascript:insert('&gt;&gt;<%= m.msg_id %>\n')"><% gt "Reply" %></a>
-<% end %>
 <% end %>
 
 <% template msg_cnt(data::msg  &m) %>
@@ -49,10 +44,6 @@ No.<%= m.msg_id %>
 <% template links() %>
 <% include master::links() %>
         <a href="<% url "/forums"%>"><% gt "Home" %></a>
-        <% if (false) %>
-        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
-        <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
-        <% end %>
 <% end %>
 
 <% template postform() %>
@@ -97,10 +88,6 @@ No.<%= m.msg_id %>
 <% template links() %>
 <% include master::links() %>
         <a href="<% url "/adm_forums"%>"><% gt "Home" %></a>
-        <% if (false) %>
-        | <a href="<% url "/user_thread" using thread_id %>"><% gt "Flat View"%></a> |
-        <a href="<% url "/tree_thread" using thread_id %>"><% gt "Tree View" %></a>
-        <% end %>
 <% end %>
 
 <% template postform() %>
@@ -120,6 +107,7 @@ No.<%= m.msg_id %>
 <% template adminform() %>
         <div class="forms">
         <table>
+        <% form as_table dmes_form.onlyfile %>
         <% form as_table dmes_form.submit %>
         </table>
         </div>

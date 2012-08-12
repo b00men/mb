@@ -47,9 +47,12 @@ delete_msg_form::delete_msg_form()
 {
         using cppcms::locale::translate;
         submit.value(translate("Delete"));
-        submit.message(translate("Delete selected messages"));        	
+        submit.message(translate("Delete selected messages"));
+        onlyfile.message(translate("Delete ONLY file(s)"));  
+        onlyfile.name("onlyfile");       	
 		add(submit);
 		add(checkboxes);
+		add(onlyfile);
 }
 
 } // data
@@ -356,10 +359,20 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
 				for(int i=1; i<size_mes+1; ++i){
 					if (c.dmes_form.boxes[i]->value()) {
 						change=1;
-	                    sql<<   "DELETE "
-	                    		"FROM messages "
-	                            "WHERE id=? " 
-	                            << c.dmes_form.boxes[i]->name() << cppdb::exec;
+	                    if (c.dmes_form.onlyfile.value())
+	                    {
+							sql<<   "UPDATE messages "
+							           "SET file='',thumb=0 "
+							           "WHERE id=? " 
+							           << c.dmes_form.boxes[i]->name() << cppdb::exec;
+	                    }
+	                    else
+	                    {
+		                    sql<<   "DELETE "
+		                    		"FROM messages "
+		                            "WHERE id=? " 
+		                            << c.dmes_form.boxes[i]->name() << cppdb::exec;
+	                    }
 						if (smeg_file.length())
 						{
 							std::stringstream ss;
