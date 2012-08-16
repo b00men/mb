@@ -8,23 +8,23 @@
 namespace data {
 
 struct msg {
-        std::string author;
-        std::string content;
-        std::string reply_to;
-        std::string date;
-        std::string file;
-        int thumb;
-        int msg_id;
-        int tid;
-        msg() : msg_id(0) {}
+    std::string author;
+    std::string content;
+    std::string reply_to;
+    std::string date;
+    std::string file;
+    int thumb;
+    int msg_id;
+    int tid;
+    msg() : msg_id(0) {}
 };
 
 struct reply_form : public cppcms::form {
-        cppcms::widgets::text author;
-        cppcms::widgets::textarea comment;
-        cppcms::widgets::file file;
-        cppcms::widgets::submit send;
-        reply_form();
+    cppcms::widgets::text author;
+    cppcms::widgets::textarea comment;
+    cppcms::widgets::file file;
+    cppcms::widgets::submit send;
+    reply_form();
 };
 
 struct delete_msg_form : public cppcms::form {
@@ -38,29 +38,21 @@ struct delete_msg_form : public cppcms::form {
 class thread_shared : public master
 {
 public:
-        thread_shared() 
-        {
-                thread_id = 0;
-        }
-        int thread_id;
-        std::string title;
-        std::string (*text2html)(std::string const &);
+    thread_shared() 
+    {
+            thread_id = 0;
+    }
+    int thread_id;
+    std::string title;
+    std::string (*text2html)(std::string const &);
 };
 
-class user_thread : public thread_shared , public msg , public delete_msg_form {
+class thread : public thread_shared , public msg , public delete_msg_form {
 public:
-        std::vector<msg> messages;
-        reply_form form;
-        delete_msg_form dmes_form;
-        bool is_admin;
-};
-
-class adm_thread : public thread_shared , public msg , public delete_msg_form {
-public:
-        std::vector<msg> messages;
-        reply_form form;
-        delete_msg_form dmes_form;
-        bool is_admin;
+    std::vector<msg> messages;
+    reply_form form;
+    delete_msg_form dmes_form;
+    bool is_admin;
 };
 
 } // data

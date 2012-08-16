@@ -15,16 +15,9 @@ public:
 
 };
 
-class user_thread : public thread_shared {
+class thread : public thread_shared {
 public:
-
-        user_thread(cppcms::service &s);
-        void prepare(std::string id); 
-};
-
-class adm_thread : public thread_shared {
-public:
-        adm_thread(cppcms::service &s);
+        thread(cppcms::service &s);
         void prepare(std::string id);
 };
 
