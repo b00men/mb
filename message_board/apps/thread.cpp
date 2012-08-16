@@ -8,6 +8,7 @@
 #include <markdown/markdown.h>
 #include <Magick++.h>
 #include <cppcms/json.h>
+#include <apps/addfunc.h>
 
 
 namespace data {
@@ -19,28 +20,15 @@ reply_form::reply_form()
         author.value(translate("Anon"));
         comment.message(translate("Message"));
         comment.attributes_string(" cols=55 rows=6 onkeypress='key2post(event, this.form);' ");
-        image.message(translate("Upload"));
-        image.limits(0,5*1024*1024);
+        file.message(translate("Upload"));
+        file.limits(0,5*1024*1024);
         send.value(translate("Send"));
         add(author);
         add(comment);
-        add(image);
+        add(file);
         add(send);
         author.limits(1,64);
         comment.non_empty();
-}
-
-login_form::login_form()
-{
-        using cppcms::locale::translate;
-        login.message(translate("Login"));
-        password.message(translate("Password"));
-        submit.value(translate("Sign in"));
-        add(login);
-        add(password);
-        add(submit);
-        login.non_empty();
-        password.non_empty();
 }
 
 delete_msg_form::delete_msg_form()
@@ -119,34 +107,10 @@ void user_thread::prepare(std::string sid) // sid (id) - id of thread
 						std::string path="";
 						std::string path_thumb="";
 						
-                    	if(c.form.image.set())
+                    	if(c.form.file.set())
                         {
-		                	path = "txt";
-		                	if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
-		                	if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
-		                	if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
-		                	if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
-		                	if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
-		                	if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
-		                	if(c.form.image.value()->mime() == "audio/vnd.wave") path="wav";
-		                	if(c.form.image.value()->mime() == "text/css") path="css";
-		                	if(c.form.image.value()->mime() == "text/csv") path="csv";
-		                	if(c.form.image.value()->mime() == "text/html") path="html";
-		                	if(c.form.image.value()->mime() == "text/javascript") path="js";
-		                	if(c.form.image.value()->mime() == "text/xml") path="xml";
-		                	if(c.form.image.value()->mime() == "video/mpeg") path="mpg";
-		                	if(c.form.image.value()->mime() == "video/mp4") path="mp4";
-		                	if(c.form.image.value()->mime() == "video/ogg") path="ogg";
-		                	if(c.form.image.value()->mime() == "video/webm") path="webm";
-		                	if(c.form.image.value()->mime() == "video/x-matroska") path="mkv";
-		                	if(c.form.image.value()->mime() == "video/x-ms-wmv") path="wmv";
-		                	if(c.form.image.value()->mime() == "video/x-flv") path="flv";
-		                	if(c.form.image.value()->mime() == "application/pdf") path="pdf";
-		                	if(c.form.image.value()->mime() == "application/zip") path="zip";
-		                	if(c.form.image.value()->mime() == "application/x-gzip") path="gz";
-		                	if(c.form.image.value()->mime() == "application/x-tar") path="tar";
-		                	if(c.form.image.value()->mime() == "application/x-deb") path="deb";
-		                	if(c.form.image.value()->mime() == "application/x-rar") path="rar";
+                        	std::string filetype=c.form.file.value()->mime();
+							filedetect(path, path_thumb, filetype);
                         }
                         
                         st=sql<<   "INSERT INTO messages(reply_to,thread_id,author,content,file) "
@@ -161,13 +125,13 @@ void user_thread::prepare(std::string sid) // sid (id) - id of thread
                                 "WHERE id=? " 
                                 << id << cppdb::exec;
                                        
-                        if(c.form.image.set())
+                        if(c.form.file.set())
                         {
                         	std::stringstream ss;
                         	ss<<settings().get<std::string>("mb.uploads")<<id<<"_"<<lastid<<"."<<path;
                     		path="";
                         	ss>>path;
-						    c.form.image.value()->save_to(path);
+						    c.form.file.value()->save_to(path);
                         }
 
                         if(path_thumb!="")
@@ -251,34 +215,10 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
 					std::string path="";
 					std::string path_thumb="";
 					
-                	if(c.form.image.set())
+                	if(c.form.file.set())
                     {
-	                	path = "txt";
-	                	if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
-	                	if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
-	                	if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
-	                	if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
-	                	if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
-	                	if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
-	                	if(c.form.image.value()->mime() == "audio/vnd.wave") path="wav";
-	                	if(c.form.image.value()->mime() == "text/css") path="css";
-	                	if(c.form.image.value()->mime() == "text/csv") path="csv";
-	                	if(c.form.image.value()->mime() == "text/html") path="html";
-	                	if(c.form.image.value()->mime() == "text/javascript") path="js";
-	                	if(c.form.image.value()->mime() == "text/xml") path="xml";
-	                	if(c.form.image.value()->mime() == "video/mpeg") path="mpg";
-	                	if(c.form.image.value()->mime() == "video/mp4") path="mp4";
-	                	if(c.form.image.value()->mime() == "video/ogg") path="ogg";
-	                	if(c.form.image.value()->mime() == "video/webm") path="webm";
-	                	if(c.form.image.value()->mime() == "video/x-matroska") path="mkv";
-	                	if(c.form.image.value()->mime() == "video/x-ms-wmv") path="wmv";
-	                	if(c.form.image.value()->mime() == "video/x-flv") path="flv";
-	                	if(c.form.image.value()->mime() == "application/pdf") path="pdf";
-	                	if(c.form.image.value()->mime() == "application/zip") path="zip";
-	                	if(c.form.image.value()->mime() == "application/x-gzip") path="gz";
-	                	if(c.form.image.value()->mime() == "application/x-tar") path="tar";
-	                	if(c.form.image.value()->mime() == "application/x-deb") path="deb";
-	                	if(c.form.image.value()->mime() == "application/x-rar") path="rar";
+                        	std::string filetype=c.form.file.value()->mime();
+							filedetect(path, path_thumb, filetype);
                     }
                     
                     st=sql<<   "INSERT INTO messages(reply_to,thread_id,author,content,file) "
@@ -293,13 +233,13 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
                             "WHERE id=? " 
                             << id << cppdb::exec;
                                    
-                    if(c.form.image.set())
+                    if(c.form.file.set())
                     {
                     	std::stringstream ss;
                     	ss<<settings().get<std::string>("mb.uploads")<<id<<"_"<<lastid<<"."<<path;
                 		path="";
                     	ss>>path;
-					    c.form.image.value()->save_to(path);
+					    c.form.file.value()->save_to(path);
                     }
 
                     if(path_thumb!="")
@@ -417,37 +357,6 @@ void adm_thread::prepare(std::string sid) // sid (id) - id of thread
 		
 		render("adm_thread",c);
 		cache().store_page(key);		
-}
-
-
-auth::auth(cppcms::service &srv) : thread_shared(srv)
-{
-        mapper().assign("");
-        dispatcher().assign(".*",&auth::prepare,this,0);
-}
-
-void auth::prepare(std::string smid)
-{
-		data::auth c;
-		using cppcms::locale::translate;
-		c.status=translate("You are not authentication.");
-		if(request().request_method()=="POST") {
-				c.form.load(context());
-				if(c.form.validate())
-				if ((c.form.login.value()==settings().get<std::string>("mb.admin_login"))&&(c.form.password.value()==settings().get<std::string>("mb.admin_password"))) {
-					session().reset_session();
-					session()["login"]="true";
-				}
-				else {
-				c.status=translate("Login incorect!");
-				session().clear();
-				}
-		}
-		if ((session().is_set("login"))&&(session()["login"]=="true"))
-			c.status=translate("Login success!");
-
-		master::prepare(c);
-		render("auth",c);		
 }
 
 } // namespace apps

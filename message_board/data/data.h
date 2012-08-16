@@ -3,5 +3,6 @@
 
 #include <data/forums.h>
 #include <data/thread.h>
+#include <data/auth.h>
 
 #endif

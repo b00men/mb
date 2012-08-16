@@ -7,6 +7,7 @@
 #include <cppcms/http_file.h>
 #include <Magick++.h>
 #include <cppcms/json.h>
+#include <apps/addfunc.h>
 
 namespace data {
 
@@ -21,13 +22,13 @@ new_topic_form::new_topic_form()
         comment.message(translate("Message"));
         comment.attributes_string(" cols=55 rows=6 onkeypress='key2post(event, this.form);' ");
         comment.non_empty();
-        image.message(translate("Upload"));
-        image.limits(0,5*1024*1024);
+        file.message(translate("Upload"));
+        file.limits(0,5*1024*1024);
         submit.value(translate("Create"));
         add(title);
         add(author);
         add(comment);
-        add(image);
+        add(file);
         add(submit);
 }
 
@@ -91,34 +92,10 @@ void forums::prepare(std::string page)
                         cppdb::statement nextst;
                         std::string path="";
 						std::string path_thumb="";
-                    	if(c.form.image.set())
+                    	if(c.form.file.set())
                         {
-		                	path = "txt";
-		                	if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
-		                	if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
-		                	if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
-		                	if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
-		                	if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
-		                	if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
-		                	if(c.form.image.value()->mime() == "audio/vnd.wave") path="wav";
-		                	if(c.form.image.value()->mime() == "text/css") path="css";
-		                	if(c.form.image.value()->mime() == "text/csv") path="csv";
-		                	if(c.form.image.value()->mime() == "text/html") path="html";
-		                	if(c.form.image.value()->mime() == "text/javascript") path="js";
-		                	if(c.form.image.value()->mime() == "text/xml") path="xml";
-		                	if(c.form.image.value()->mime() == "video/mpeg") path="mpg";
-		                	if(c.form.image.value()->mime() == "video/mp4") path="mp4";
-		                	if(c.form.image.value()->mime() == "video/ogg") path="ogg";
-		                	if(c.form.image.value()->mime() == "video/webm") path="webm";
-		                	if(c.form.image.value()->mime() == "video/x-matroska") path="mkv";
-		                	if(c.form.image.value()->mime() == "video/x-ms-wmv") path="wmv";
-		                	if(c.form.image.value()->mime() == "video/x-flv") path="flv";
-		                	if(c.form.image.value()->mime() == "application/pdf") path="pdf";
-		                	if(c.form.image.value()->mime() == "application/zip") path="zip";
-		                	if(c.form.image.value()->mime() == "application/x-gzip") path="gz";
-		                	if(c.form.image.value()->mime() == "application/x-tar") path="tar";
-		                	if(c.form.image.value()->mime() == "application/x-deb") path="deb";
-		                	if(c.form.image.value()->mime() == "application/x-rar") path="rar";
+                            std::string filetype=c.form.file.value()->mime();
+                            filedetect(path, path_thumb, filetype);
                         }
                         st= sql <<"INSERT INTO threads(title) VALUES(?)" 
                                 << c.form.title.value() << cppdb::exec;
@@ -127,13 +104,13 @@ void forums::prepare(std::string page)
                                 "VALUES (?,?,0,?,?)"
                                 << tid << path << c.form.comment.value() << c.form.author.value() << cppdb::exec;
                         int id=nextst.last_insert_id();
-                        if(c.form.image.set())
+                        if(c.form.file.set())
                         {   
                         	std::stringstream ss;
                         	ss<<settings().get<std::string>("mb.uploads")<<tid<<"_"<<id<<"."<<path;
                     		path="";
                         	ss>>path;
-						    c.form.image.value()->save_to(path);
+						    c.form.file.value()->save_to(path);
                         }
 
                         if(path_thumb!="")
@@ -249,34 +226,10 @@ void adm_forums::prepare(std::string page)
                         cppdb::statement nextst;
                         std::string path="";
                         std::string path_thumb="";
-                        if(c.form.image.set())
+                        if(c.form.file.set())
                         {
-                            path = "txt";
-                            if(c.form.image.value()->mime() == "image/png") { path="png"; path_thumb="png"; }
-                            if(c.form.image.value()->mime() == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
-                            if(c.form.image.value()->mime() == "image/gif") { path="gif"; path_thumb="gif"; }
-                            if(c.form.image.value()->mime() == "image/svg+xml") path="svg";
-                            if(c.form.image.value()->mime() == "audio/mpeg") path="mp3";
-                            if(c.form.image.value()->mime() == "audio/ogg") path="ogg";
-                            if(c.form.image.value()->mime() == "audio/vnd.wave") path="wav";
-                            if(c.form.image.value()->mime() == "text/css") path="css";
-                            if(c.form.image.value()->mime() == "text/csv") path="csv";
-                            if(c.form.image.value()->mime() == "text/html") path="html";
-                            if(c.form.image.value()->mime() == "text/javascript") path="js";
-                            if(c.form.image.value()->mime() == "text/xml") path="xml";
-                            if(c.form.image.value()->mime() == "video/mpeg") path="mpg";
-                            if(c.form.image.value()->mime() == "video/mp4") path="mp4";
-                            if(c.form.image.value()->mime() == "video/ogg") path="ogg";
-                            if(c.form.image.value()->mime() == "video/webm") path="webm";
-                            if(c.form.image.value()->mime() == "video/x-matroska") path="mkv";
-                            if(c.form.image.value()->mime() == "video/x-ms-wmv") path="wmv";
-                            if(c.form.image.value()->mime() == "video/x-flv") path="flv";
-                            if(c.form.image.value()->mime() == "application/pdf") path="pdf";
-                            if(c.form.image.value()->mime() == "application/zip") path="zip";
-                            if(c.form.image.value()->mime() == "application/x-gzip") path="gz";
-                            if(c.form.image.value()->mime() == "application/x-tar") path="tar";
-                            if(c.form.image.value()->mime() == "application/x-deb") path="deb";
-                            if(c.form.image.value()->mime() == "application/x-rar") path="rar";
+                            std::string filetype=c.form.file.value()->mime();
+                            filedetect(path, path_thumb, filetype);
                         }
                         st= sql <<"INSERT INTO threads(title) VALUES(?)" 
                                 << c.form.title.value() << cppdb::exec;
@@ -285,13 +238,13 @@ void adm_forums::prepare(std::string page)
                                 "VALUES (?,?,0,?,?)"
                                 << tid << path << c.form.comment.value() << c.form.author.value() << cppdb::exec;
                         int id=nextst.last_insert_id();
-                        if(c.form.image.set())
+                        if(c.form.file.set())
                         {   
                             std::stringstream ss;
                             ss<<settings().get<std::string>("mb.uploads")<<tid<<"_"<<id<<"."<<path;
                             path="";
                             ss>>path;
-                            c.form.image.value()->save_to(path);
+                            c.form.file.value()->save_to(path);
                         }
 
                         if(path_thumb!="")

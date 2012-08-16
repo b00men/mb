@@ -22,16 +22,9 @@ struct msg {
 struct reply_form : public cppcms::form {
         cppcms::widgets::text author;
         cppcms::widgets::textarea comment;
-        cppcms::widgets::file image;
+        cppcms::widgets::file file;
         cppcms::widgets::submit send;
         reply_form();
-};
-
-struct login_form : public cppcms::form {
-        cppcms::widgets::text login;
-        cppcms::widgets::password password;
-        cppcms::widgets::submit submit;
-        login_form();
 };
 
 struct delete_msg_form : public cppcms::form {
@@ -69,13 +62,6 @@ public:
         delete_msg_form dmes_form;
         bool is_admin;
 };
-
-class auth : public thread_shared{
-public:
-        login_form form;
-        std::string status;
-};
-
 
 } // data
 

@@ -52,7 +52,7 @@ No.<%= m.msg_id %>
         <table>
                 <% form as_table form.author %>
                 <% form as_table form.comment %>
-                <% form as_table form.image %>
+                <% form as_table form.file %>
                 <% form as_table form.send %>
         </table>
         </form>
@@ -96,7 +96,7 @@ No.<%= m.msg_id %>
         <table>
                 <% form as_table form.author %>
                 <% form as_table form.comment %>
-                <% form as_table form.image %>
+                <% form as_table form.file %>
                 <% form as_table form.send %>
         </table>
         </form>
@@ -144,7 +144,7 @@ No.<%= m.msg_id %>
 
 <% view auth uses data::auth extends master %>
 
-<% template title() %><% gt "Authentication" using title %><% end %>
+<% template title() %><% gt "Authentication" %><% end %>
 
 <% template links() %>
         <% include master::links() %>

@@ -9,7 +9,7 @@ namespace data {
                 cppcms::widgets::text title;
                 cppcms::widgets::text author;
                 cppcms::widgets::textarea comment;
-                cppcms::widgets::file image;
+                cppcms::widgets::file file;
                 cppcms::widgets::submit submit;
                 new_topic_form();
         };
