@@ -49,7 +49,9 @@ set(MB_SRC
 		markdown/markdown.cpp
 		markdown/markdown-tokens.cpp
         apps/master.cpp
+        apps/addfunc.cpp
         apps/thread.cpp
+        apps/auth.cpp
         apps/forums.cpp
         apps/mb.cpp
         apps/main.cpp)

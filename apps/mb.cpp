@@ -1,6 +1,8 @@
 #include <apps/mb.h>
+//#include <apps/filedet.h>
 #include <apps/forums.h>
 #include <apps/thread.h>
+#include <apps/auth.h>
 #include <cppcms/url_dispatcher.h>
 #include <cppcms/url_mapper.h>
 #include <cppcms/json.h>
