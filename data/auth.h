@@ -9,16 +9,18 @@ namespace data {
 
 
 struct login_form : public cppcms::form {
-        cppcms::widgets::text login;
-        cppcms::widgets::password password;
-        cppcms::widgets::submit submit;
-        login_form();
+    cppcms::widgets::text login;
+    cppcms::widgets::password password;
+    cppcms::widgets::submit submit;
+    cppcms::widgets::submit exit;
+    login_form();
 };
 
 class auth : public master {
 public:
-        login_form form;
-        std::string status;
+    login_form form;
+    std::string status;
+    bool is_admin;
 };
 
 } // data

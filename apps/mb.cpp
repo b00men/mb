@@ -19,20 +19,10 @@ mb::mb(cppcms::service &s) : cppcms::application(s)
                 "/{1}",
                 "(/(\\d+)?)?",2);
 
-        attach( new adm_forums(s),
-                "adm_forums",
-                "/adm_forums/{1}",
-                "(/adm_forums/(\\d+)?)?",2);
-
-        attach( new user_thread(s),
-                "user_thread",
+        attach( new thread(s),
+                "thread",
                 "/thread/{1}",
                 "/thread/(\\d+)",1);
-
-        attach( new adm_thread(s),
-                "adm_thread",
-                "/adm_thread/{1}",
-                "/adm_thread/(\\d+)",1);
 
         attach( new auth(s),
                 "admin",

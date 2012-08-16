@@ -114,6 +114,9 @@ msgstr "Секция редактирования"
 msgid "Sign in"
 msgstr "Войти"
 
+msgid "Sign out"
+msgstr "Выйти"
+
 msgid "Delete selected messages"
 msgstr "Удалить выбранные сообщения"
 	
