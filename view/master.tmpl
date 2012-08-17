@@ -21,34 +21,36 @@
 <% include header() %>
 </head>
 <body>
-        <div id="page">
-                <div id="links">
-                        <% include links() %>
-                </div>
-                <div id="body">
-                        <span class="title"><h1><% include title() %></h1></span>
-                        <% include body() %>
-                </div>
-                <div id="links">
-                        <% include links() %>
-                </div>
+    <div id="page">
+        <div id="links">
+                <% include links() %>
         </div>
+        <div id="body">
+                <span class="title"><h1><% include title() %></h1></span>
+                <% include body() %>
+        </div>
+        <div id="links">
+                <% include links() %>
+        </div>
+        <%= footer | raw %>
+    </div>
 </body>
 </html>
 <% end template %>
 
-<% template body() %><% end %>
+<% template body() %><% end template %>
+
 <% template links() %>
 
 <% end %>
 <% template note() %>
 <div class=note>
-<ul>
-<li>
-<% gt "You can use syntax" %>
-<a href="<% url "/thread" using url_mrkdwn %>" target="_blank">markdown</a>.
-</li>
-</ul>
+    <ul>
+    <li>
+    <% gt "You can use syntax" %>
+    <a href="<% url "/thread" using url_mrkdwn %>" target="_blank">markdown</a>.
+    </li>
+    </ul>
 </div>
 <% end %>
 <% end view %>

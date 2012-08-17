@@ -8,6 +8,7 @@ namespace data {
         public:
                 std::string media;
                 int url_mrkdwn;
+                std::string footer;
         };
         
 }

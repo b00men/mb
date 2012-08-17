@@ -20,6 +20,7 @@ protected:
 private:
         std::string conn_str_;
         std::string media_;
+        std::string footer_;
 };
 
 
