@@ -63,6 +63,11 @@ a img {
 	padding: 0px 40px 10px 20px;
 }
 
+footer {
+	text-align: center;
+	font-size: 10pt;
+}
+
 pre {
 	margin: 0px 0px 12px 0px;
 	padding: 5px 5px 5px 8px;
