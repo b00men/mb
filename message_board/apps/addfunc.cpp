@@ -3,6 +3,7 @@
 namespace apps {
 
 void filedetect(std::string& path , std::string& path_thumb , std::string& filetype){
+	path = "txt";
 	if(filetype == "image/png") { path="png"; path_thumb="png"; }
 	if(filetype == "image/jpeg") { path="jpg"; path_thumb="jpg"; }
 	if(filetype == "image/gif") { path="gif"; path_thumb="gif"; }
@@ -28,6 +29,7 @@ void filedetect(std::string& path , std::string& path_thumb , std::string& filet
 	if(filetype == "application/x-tar") path="tar";
 	if(filetype == "application/x-deb") path="deb";
 	if(filetype == "application/x-rar") path="rar";
+	if(filetype == "application/x-shockwave-flash") path="swf";
 }
 
 } // namespace apps

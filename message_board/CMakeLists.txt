@@ -116,7 +116,7 @@ install(TARGETS mb simple
 	LIBRARY DESTINATION lib/mb
 	ARCHIVE DESTINATION lib/mb)
 
-foreach(IMAGES css csv deb flv gif gz html jpeg jpg js mkv mp3 mp4 ogg pdf png qt rar svg tar txt wav webm wmv xml zip) 
+foreach(IMAGES css csv deb flv gif gz html jpeg jpg js mkv mp3 mp4 ogg pdf png qt rar svg swf tar txt wav webm wmv xml zip) 
 	install(FILES media/images/${IMAGES}.png DESTINATION share/mb/media/images)
 endforeach()
 
