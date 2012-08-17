@@ -3,6 +3,7 @@
         "mb" : {
                 "media" : "/media",
                 "root" : "",
+                "footer" : "",
                 "uploads" : "/var/www/media/uploads/",
                 "admin_login" : "Admin",
                 "admin_password" : "Password",

@@ -11,6 +11,7 @@ master::master(cppcms::service &srv) : cppcms::application(srv)
 {       
         conn_str_ = settings().get<std::string>("mb.connection_string");
         media_=settings().get<std::string>("mb.media");
+        footer_=settings().get<std::string>("mb.footer");
 }
 
 void master::init()
@@ -26,6 +27,7 @@ void master::prepare(data::master &c)
 {
         c.media=media_;
         c.url_mrkdwn=1;
+        c.footer=footer_;
 }
 
 
