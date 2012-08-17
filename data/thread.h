@@ -30,9 +30,9 @@ struct reply_form : public cppcms::form {
 struct delete_msg_form : public cppcms::form {
 	cppcms::form checkboxes;
 	std::vector<cppcms::widgets::checkbox *> boxes;
-        cppcms::widgets::submit submit;
-        cppcms::widgets::checkbox onlyfile;
-        delete_msg_form();
+    cppcms::widgets::submit submit;
+    cppcms::widgets::submit onlyfile;
+    delete_msg_form();
 };
 
 class thread_shared : public master
@@ -40,7 +40,7 @@ class thread_shared : public master
 public:
     thread_shared() 
     {
-            thread_id = 0;
+        thread_id = 0;
     }
     int thread_id;
     std::string title;

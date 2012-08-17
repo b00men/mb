@@ -32,6 +32,16 @@ new_topic_form::new_topic_form()
     add(submit);
 }
 
+delete_thrds_form::delete_thrds_form()
+{
+    using cppcms::locale::translate;
+    submit.name("delete");
+    submit.value(translate("Delete"));
+    submit.message(translate("Delete selected threads"));   
+    add(submit);
+    add(checkboxes);
+}
+
 } // data
 
 namespace apps {
@@ -144,28 +154,107 @@ void forums::prepare(std::string page)
             c.form.clear();
             return;
         }
-        else {
-                prepare_content(c,page);
-        }
-    }
-    else {
-        std::string key;
+
         if (c.is_admin){
-            key = "admin_forums_" + page;
-        }
-        else{
-            key = "user_forums_" + page;
-        }
-        if(cache().fetch_page(key))
+            // 1) Читаем возможные треды. Готовим change
+            const unsigned topics_per_page=10;
+            int offset= page.empty() ? 0 : atoi(page.c_str());
+            cppdb::result r;
+            r=sql<< "SELECT id "
+                    "FROM threads "
+                    "ORDER BY date DESC "
+                    "LIMIT ?,?" << offset*topics_per_page << topics_per_page;
+            std::string sthrd_id="";
+            int size_thr=0;
+            bool change=0;
+
+            // 2) Цикл: каждому треду по чекбоксу.
+            c.dthr_form.boxes.reserve(10);
+            for(int i=0;r.next();i++) {
+                r>>sthrd_id;
+                c.dthr_form.boxes.resize(i+1);
+                cppcms::widgets::checkbox *box = new cppcms::widgets::checkbox();
+                c.dthr_form.checkboxes.attach(box); // transfer ownership and register to parent
+                box->identification(sthrd_id);
+                box->name(sthrd_id);
+                c.dthr_form.boxes.push_back(box);
+                size_thr=i+1;                       
+            }
+
+            // 3) Грузим контент.
+            c.dthr_form.load(context());
+
+            std::string _id="";
+            // 4) Цикл: работа с каждым чекбоксом:
+            for(int i=1; i<size_thr+1; ++i){
+            //     4.1) if: Снимаем значение с чекбокса:
+                if (c.dthr_form.boxes[i]->value()) {
+                    change=1;
+
+            //         4.1.1) Копируем почти полностью (без onlyfile)
+            //                работу по удалению треда из thread.cpp
+                    std::string smeg_id="";
+                    std::string smeg_file="";
+                    cppdb::result r;
+                    cppdb::result rthr;
+                    rthr=sql<< "SELECT id,file "
+                            "FROM messages WHERE thread_id=? "
+                            "ORDER BY id" << c.dthr_form.boxes[i]->name();
+
+                    for(int j=0;rthr.next();j++) {
+                        rthr>>smeg_id>>smeg_file;
+
+                        sql<<   "DELETE "
+                                "FROM messages "
+                                "WHERE id=? " 
+                                << smeg_id << cppdb::exec;
+                        if (smeg_file.length()) {
+                            std::stringstream ss;
+                            std::stringstream ss2;
+                            std::string delpath="";
+                            ss<<settings().get<std::string>("mb.uploads")<<c.dthr_form.boxes[i]->name()<<"_"<<smeg_id<<"."<<smeg_file;
+                            ss>>delpath;
+                            std::remove(delpath.c_str());
+                            ss2<<settings().get<std::string>("mb.uploads")<<"thumb_"<<c.dthr_form.boxes[i]->name()<<"_"<<smeg_id<<"."<<smeg_file;
+                            delpath="";
+                            ss2>>delpath;
+                            std::remove(delpath.c_str());
+                        }
+                    }
+
+                    cache().rise("thread_" + c.dthr_form.boxes[i]->name());
+                    cache().rise("remove_thread");
+                    sql<<   "DELETE "
+                            "FROM threads "
+                            "WHERE id=? " 
+                            << c.dthr_form.boxes[i]->name() << cppdb::exec;
+                }
+            }
+            // 5) Если работа проводилась - обновить кеш.
+            if(change) {
+                cache().rise("new_thread");
+                c.form.clear();
+                response().set_redirect_header(url("/forums",page));
+
                 return;
-        // Add some shared key for all main_page_
-        cache().add_trigger("new_thread");
-        
-        prepare_content(c,page);
-
-        cache().store_page(key);
-
+            }
+        }
     }
+    std::string key;
+    if (c.is_admin){
+        key = "admin_forums_" + page;
+    }
+    else{
+        key = "user_forums_" + page;
+    }
+    if(cache().fetch_page(key))
+            return;
+    // Add some shared key for all main_page_
+    cache().add_trigger("new_thread");
+    
+    prepare_content(c,page);
+
+    cache().store_page(key);
         
 }
 

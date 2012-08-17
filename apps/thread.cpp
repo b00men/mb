@@ -37,7 +37,8 @@ delete_msg_form::delete_msg_form()
     submit.value(translate("Delete"));
     submit.message(translate("Delete selected messages"));
     onlyfile.message(translate("Delete ONLY file(s)"));  
-    onlyfile.name("onlyfile");       	
+    onlyfile.name("onlyfile");  
+    onlyfile.value(translate("Delete"));     	
 	add(submit);
 	add(checkboxes);
 	add(onlyfile);
@@ -227,7 +228,7 @@ void thread::prepare(std::string sid) // sid (id) - id of thread
 			}
 			if(change) {
                 cache().rise("thread_" + sid);
-                cache().rise("remove_thread");
+                cache().rise("remove_post");
 
                 response().set_redirect_header(url("/thread",id));
                 c.form.clear();
@@ -245,7 +246,7 @@ void thread::prepare(std::string sid) // sid (id) - id of thread
 	if(cache().fetch_page(key))
 			return;
     cache().add_trigger("thread_" + sid);
-	thread_shared::prepare(c,id);    
+  
 	        
 	cppdb::result r;
 	r=sql<< "SELECT id,thread_id,author,content,reply_to,date,file,thumb "
@@ -257,8 +258,7 @@ void thread::prepare(std::string sid) // sid (id) - id of thread
         c.messages.resize(i+1);
         r>>c.messages[i].msg_id>>c.messages[i].tid>>c.messages[i].author>>c.messages[i].content>>c.messages[i].reply_to>>c.messages[i].date>>c.messages[i].file>>c.messages[i].thumb;
 	}		
-
-	render("thread",c);
+	if (thread_shared::prepare(c,id)) render("thread",c);
 	cache().store_page(key);
 }
 

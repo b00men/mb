@@ -1,52 +1,71 @@
 <% skin %>
 <% view forums uses data::forums  extends master %>
+
+<% template adminform() %>
+    <div class="forms">
+    <table>
+    <% form as_table dthr_form.submit %>
+    </table>
+    </div>
+<% end template %>
+
 <% template body() %>
-        <span class="title"><h2><% gt "List of Disussion" %></h2></span>
-        <% if is_admin %>
-        <span class="title"><h3><% gt "Admin view" %></h3></span>
+    <span class="title"><h2><% gt "List of Disussion" %></h2></span>
+    <% if is_admin %>
+    <form id="adminform" action="" method="post" enctype="multipart/form-data" ><% csrf %>
+    <span class="title"><h3><% gt "Admin view" %></h3></span>
+    <% end %>
+    <% foreach topic in topics %>
+        <div class="topics">
+        <table width=100%>
+        <tr>
+            <td align=left><% gt "Thread" %></td>
+            <td align=right><% gt "Last Post" %></td>
+        </tr>
+        <tr><td colspan=2><hr></td></tr>
+        <% item %>
+        <tr>
+            <td align=left>
+            <% if is_admin %>
+            <input name="<% c++ out()<<topic.id; %>" value="<% c++ out()<<topic.id; %>" type="checkbox">
+            <% end %>
+            <a href="<% url "/thread" using topic.id %>"><%= topic.title %></a></td>
+            <td align=right><%= topic.date %></td>
+        </tr>
         <% end %>
-        <% foreach topic in topics %>
-                        <div class="topics">
-                <table width=100%>
-                <tr>
-                <td align=left><% gt "Thread" %></td>
-                <td align=right><% gt "Last Post" %></td>
-                </tr>
-                <tr><td colspan=2><hr></td></tr>
-                <% item %>
-                <tr>
-                <td align=left><a href="<% url "/thread" using topic.id %>"><%= topic.title %></a></td>
-                <td align=right><%= topic.date %></td>
-                </tr>
-                <% end %>
-                </table>
-                </div>
-        <% empty %>
-                <h2><% gt "No Topics" %></h2>
-        <% end %>
-        <br />
-        <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
-        <div class="forms"><a name="end"></a>
-        <form action="<% url "/forums"%>#end" method="post" enctype="multipart/form-data" ><% csrf script %>
-        <table>
-        <% form as_table form %>
         </table>
-        </form>
-        <% include master::note() %>
         </div>
-        <br />
+    <% empty %>
+        <span class="title"><h2><% gt "No Topics" %></h2></span>
+    <% end %>
+    <% if is_admin %>
+    <span class="title"><h2><% gt "Section of the edit" %></h2></span>
+    <% include adminform() %>
+    </form>
+    <% end %>
+    <br />
+    <span class="title"><h2><% gt "Create New Disussion" %></h2></span>
+    <div class="forms"><a name="end"></a>
+    <form action="<% url "/forums"%>#end" method="post" enctype="multipart/form-data" ><% csrf script %>
+    <table>
+    <% form as_table form %>
+    </table>
+    </form>
+    <% include master::note() %>
+    </div>
+    <br />
 <% end template %>
 
 <% template links() %>
-        <% include master::links() %>
-        <a href="<% url "/forums"%>"><% gt "Home" %></a>
-        <% if next %>
-        | <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
-        <% end %>
-        <% if prevneg %>
-        | <a href="<% url "/forums" using prev  %>"><% gt "Prev Page" %></a>
-        <% end %>
-        | <a href="<% url "/admin"%>"><% gt "Login" %></a>
+    <% include master::links() %>
+    <a href="<% url "/forums"%>"><% gt "Home" %></a>
+    <% if next %>
+    | <a href="<% url "/forums" using next %>"><% gt "Next Page" %></a>
+    <% end %>
+    <% if prevneg %>
+    | <a href="<% url "/forums" using prev  %>"><% gt "Prev Page" %></a>
+    <% end %>
+    | <a href="<% url "/admin"%>"><% gt "Login" %></a>
 <% end template %>
 
 
