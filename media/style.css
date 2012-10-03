@@ -4,7 +4,8 @@ body{
 }
 
 #page {
-	width:900px;
+	max-width:900px;
+	min-width:600px;
 	margin:20px auto;
 	padding-left:10px;
 	padding-right:10px;
