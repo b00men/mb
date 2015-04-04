@@ -108,7 +108,7 @@ if(EXE_MSGFMT)
         endforeach()
         add_custom_target(create-mo ALL DEPENDS ${MO_FILES})
 else()
-        message("-- msgfmt not found, translations not generatied")
+        message("Warrning: msgfmt not found, translations not generatied (try install gettext)")
 endif()
 
 install(TARGETS mb simple
