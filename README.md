@@ -1,19 +1,13 @@
-=============
-message board
-=============
-
+# message board
 mb is a message board on cppcms
 
-
-Installation
-============
-
+### Installation
 
 **For compile&work on debian8.amd64 with mysql, nginx and fcgi**
 
-install `libgcrypt11 <https://packages.debian.org/wheezy/libgcrypt11>`_ and `libicu48 <https://packages.debian.org/wheezy/libicu48>`_ manual (for apt.cppcms.com)
+install [libgcrypt11](https://packages.debian.org/wheezy/libgcrypt11) and [libicu48](https://packages.debian.org/wheezy/libicu48>) manual (for apt.cppcms.com)
 
-Then exicute::
+Then exicute:
 
     echo "deb http://apt.cppcms.com/ wheezy main" > /etc/apt/sources.list.d/cppcms.list
     apt-get update
