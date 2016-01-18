@@ -17,7 +17,7 @@
         },
         "service" : {
                 "api" : "fastcgi",
-                "socket" : "/tmp/mb-fcgi.sock"
+                "socket" : "/var/run/mb-fcgi.sock"
         },
         "views" : {
                  "paths" : [ "/usr/local/lib/mb" ],
@@ -25,7 +25,8 @@
         },
         "file_server" : {
                 "enable" : true,
-                "document_root" : "/var/www/"
+		"document_root" : "/usr/local/share/"
+                //"document_root" : "/var/www/"
         },
         "session" : {
                 "expire" : "renew",

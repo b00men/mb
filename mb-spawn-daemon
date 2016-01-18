@@ -1,5 +1,5 @@
 #!/bin/bash
-START="/usr/bin/spawn-fcgi -P /var/log/nginx/mb.pid -u www-data -g www-data -s /var/run/mb-fcgi.sock -- /usr/local/bin/mb -c /usr/local/share/mb/config.js"
+START="/usr/bin/spawn-fcgi -P /var/log/nginx/mb.pid -u www-data -g www-data -s /tmp/mb-fcgi.sock -- /usr/local/bin/mb -c /usr/local/share/mb/config.js"
 STOP="killall -9 /usr/local/bin/mb"
 RETVAL=0
 case "$1" in
