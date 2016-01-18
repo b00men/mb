@@ -13,11 +13,11 @@
                 },
                 // Choose your datebase type
                 //"connection_string" : "sqlite3:db=mb.db;@pool_size=10"
-                //"connection_string" : "mysql:database=name_of_datebase;user=user_of_datebase;password=password;@pool_size=10"
+                //"connection_string" : "mysql:database=name_of_datebase;user=user_of_datebase;password=password_of_database;@pool_size=10"
         },
         "service" : {
                 "api" : "fastcgi",
-                "socket" : "/var/run/mb-fcgi.sock"
+                "socket" : "/tmp/mb-fcgi.sock"
         },
         "views" : {
                  "paths" : [ "/usr/local/lib/mb" ],
@@ -33,6 +33,8 @@
                 "timeout" : 604800,
                 "location" : "client",
                 "client" : {
+			"cbc" : "aes",
+                        //"cbc_key" : "Your_cbc_key",
                         "hmac" : "sha1",
                         //"hmac_key" : "Your hmac_key"
                 }

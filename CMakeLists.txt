@@ -133,7 +133,7 @@ foreach(LOCALE ${MB_LANG})
 		DESTINATION share/locale/${LOCALE}/LC_MESSAGES/)
 endforeach()
 
-install(FILES config.js.sample DESTINATION share/mb)
+install(FILES message_board config.js.sample DESTINATION share/mb)
 
 if(EXE_SQLITE3)
         add_custom_command(
