@@ -20,3 +20,4 @@ Then exicute:
     cp /usr/local/share/mb/config.js.sample /usr/local/share/mb/config.js
 
 cppcms_make_key --hmac sha1 --cbc aes
+mysql -u root -p mb < mysql.sql
