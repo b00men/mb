@@ -11,7 +11,12 @@ Then exicute:
 
     echo "deb http://apt.cppcms.com/ wheezy main" > /etc/apt/sources.list.d/cppcms.list
     apt-get update
-    apt-get install nginx cmake g++ libcppcms-dev libcppdb-dev mysql-server libcppdb-mysql0 libboost-dev libmagick++-dev libboost-regex-dev gettext spawn-fcgi
-
+    apt-get install git nginx cmake g++ libcppcms-dev libcppdb-dev mysql-server libcppdb-mysql0 libboost-dev libmagick++-dev libboost-regex-dev gettext spawn-fcgi
+    git clone https://github.com/b00men/mb.git
+    cd mb
+    cmake
+    make
+    make install
+    cp /usr/local/share/mb/config.js.sample /usr/local/share/mb/config.js
 
 cppcms_make_key --hmac sha1 --cbc aes
