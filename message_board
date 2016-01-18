@@ -17,7 +17,7 @@ server {
 	listen 8060 default_server;
 	listen [::]:8060 default_server;
 
-	root /usr/local/share/;
+	root /usr/local/share/mb/;
 
 	server_name _;
 

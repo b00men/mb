@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 if [ `whoami` != "root" ]
 then
-	echo You need to be root to perform this command. 
+	echo You need to be root to perform this command.
 	exit 1
 fi
+
 ARCH=`uname -r | sed 's/.*-//'`
+
+echo
 echo "Download and manual install libgcrypt11 and libicu48:"
 wget -q http://ftp.fr.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u3_$ARCH.deb
 wget -q http://ftp.fr.debian.org/debian/pool/main/i/icu/libicu48_4.8.1.1-12+deb7u3_$ARCH.deb
@@ -55,13 +58,12 @@ else
 	rm /tmp/config.js
 fi
 
-echo -n "MySQL database name:"
-read DATABASE; echo
-echo -n "MySQL login"
-read USER; echo
-echo -n "MySQL password:"
+echo -n "MySQL database name: "
+read DATABASE;
+echo -n "MySQL login: "
+read USER;
+echo -n "MySQL password: "
 read -s PASSWD; echo
 sed -i -e "s/name_of_datebase/$DATABASE/" -e "s/user_of_datebase/$USER/" -e "s/password_of_database/$PASSWD/" /usr/local/share/mb/config.js
 sed -i 's/\/\/\"connection_string\" \: \"mysql/\"connection_string\" \: \"mysql/' /usr/local/share/mb/config.js
-echo
 
