@@ -4,7 +4,7 @@
                 "media" : "/media",
                 "root" : "",
                 "footer" : "",
-                "uploads" : "/var/www/media/uploads/",
+                "uploads" : "/srv/mb/name_of_mb/media/uploads/",
                 "admin_login" : "Admin",
                 "admin_password" : "Password",
                 "languages" : {
@@ -25,7 +25,7 @@
         },
         "file_server" : {
                 "enable" : true,
-		"document_root" : "/usr/local/share/"
+                "document_root" : "/usr/local/share/"
                 //"document_root" : "/var/www/"
         },
         "session" : {
@@ -33,7 +33,7 @@
                 "timeout" : 604800,
                 "location" : "client",
                 "client" : {
-			"cbc" : "aes",
+                "cbc" : "aes",
                         //"cbc_key" : "Your_cbc_key",
                         "hmac" : "sha1",
                         //"hmac_key" : "Your hmac_key"

@@ -49,7 +49,7 @@ function install_depending {
 
 	if dpkg --list libgcrypt11 libicu48 > /dev/null
 	then
-	        echo "Libgcrypt11 and libicu48 avalible in repo or already install"
+	    #echo "Libgcrypt11 and libicu48 avalible in repo or already install"
 		DEB_ibgcrypt_libicu="libgcrypt11 libicu48"
 	else
 		echo -n "Download libgcrypt11 and libicu48... "
@@ -58,9 +58,9 @@ function install_depending {
 			echo
 			echo "Manual install libgcrypt11 and libicu48:"
 			dpkg -i libgcrypt11_1.5.0-5+deb7u3_$ARCH.deb libicu48_4.8.1.1-12+deb7u3_$ARCH.deb || exit 1
+			echo
 		fi
 	fi
-	echo
 
 	echo -n "Install dependets packages... "
 	apt-get install -y --force-yes -qq $DEB_WEB $DEB_DB $DEB_BUILD $DEB_ibgcrypt_libicu && echo done || exit 1
@@ -97,6 +97,7 @@ function config_nginx {
 	cp /usr/local/share/mb/message_board /etc/nginx/sites-available/$DATABASE &&
 	ln -sf /etc/nginx/sites-available/$DATABASE /etc/nginx/sites-enabled/$DATABASE &&
 	sed -i "s/8060/$MB_PORT/g" /etc/nginx/sites-available/$DATABASE &&
+	sed -i "s/message_board_name/$MB_ID/g" /etc/nginx/sites-available/$DATABASE &&
 	sed -i "s/mb-fcgi\.sock/mb_$MB_ID-fcgi.sock/" /etc/nginx/sites-available/$DATABASE &&
 	echo done || exit 1
 	echo -n "Reload nginx... "
@@ -105,8 +106,12 @@ function config_nginx {
 }
 
 function config_mb_daemon {
-	cp mb-daemon /etc/init.d/
-	systemctl enable mb-daemon
+	echo "Configure message board daemon."
+	echo -n "Create mb-daemon... "
+	cp ../mb-daemon /etc/init.d/ && echo done || exit 1
+	echo "Enable mb-daemon... "
+	systemctl enable mb-daemon  && echo done || exit 1
+	echo
 }
 
 function config_mb {
@@ -128,15 +133,19 @@ function config_mb {
 	fi || exit 1
 	echo -n "Add to config fcgi sock file... "
 	sed -i "s/mb-fcgi\.sock/mb_$MB_ID-fcgi.sock/" /etc/mb/conf.d/$MB_ID && echo done || exit 1
-	echo -n "Add to config MySQL connection... "
-	sed -i -e "s/name_of_datebase/$DATABASE/" -e "s/user_of_datebase/$DBUSER/" -e "s/password_of_database/$PASSWD/" /etc/mb/conf.d/$MB_ID &&
+	echo -n "Add to config MySQL connection and upload dir... "
+	sed -i -e "s/name_of_mb/$MB_ID/g" -e "s/name_of_datebase/$DATABASE/g" -e "s/user_of_datebase/$DBUSER/g" -e "s/password_of_database/$PASSWD/g" /etc/mb/conf.d/$MB_ID &&
 	sed -i 's/\/\/\"connection_string\" \: \"mysql/\"connection_string\" \: \"mysql/' /etc/mb/conf.d/$MB_ID &&
 	echo done || exit 1
+	echo -n "Create upload directory... "
+	rm -Rf /srv/mb/$MB_ID/media/uploads &&
+	mkdir -p /srv/mb/$MB_ID/media/uploads &&
+	chown -R www-data:www-data /srv/mb/$MB_ID && echo done || exit 1
 }
 
 function run_and_epilogue {
 	echo "Message board successfull install and configure!"
 	echo -n "Message board start. "
-	service mb-daemon start || exit 1
+	service mb-daemon restart || exit 1
 	echo "Try http://localhost:$MB_PORT to connect"
 }
