@@ -10,4 +10,4 @@ install [libgcrypt11](https://packages.debian.org/wheezy/libgcrypt11) and [libic
     sudo apt-get update && sudo apt-get install -y git
     git clone https://github.com/b00men/mb
     cd mb
-    sudo ./fast_install.sh
+    sudo ./install.sh
