@@ -6,26 +6,30 @@ then
 fi
 
 ARCH=`uname -r | sed 's/.*-//'`
-
+MB_ID="-"
 DEB_WEB="nginx spawn-fcgi"
 DEB_DB="mysql-server libcppdb-mysql0"
 DEB_BUILD="cmake g++ libcppcms-dev libcppdb-dev libboost-dev libmagick++-dev libboost-regex-dev gettext"
+DATABASE="mb_default"
+DBUSER="mb_default"
+PASSWD=`date +%s | sha256sum | base64 | head -c 32`
 
-while [ ! "$DATABASE" ]
+echo
+echo "This install script can create one or several sites on mb.
+Compose message board id for current site.
+ID can include alphabets, digs and must be less 32 chars.
+Remember, if ID exist, config and database will be rewrited!"
+echo
+while [ "`echo $MB_ID | sed 's/[[:alnum:]]//g'`" != "" ]
 do
-echo -n "Enter MySQL database name: "
-read DATABASE;
+read -n32 -p "Message board ID or press [Enter] to default: " MB_ID
 done
-while [ ! "$DBUSER" ]
-do
-echo -n "Enter MySQL login: "
-read DBUSER;
-done
-while [ ! "$PASSWD" ]
-do
-echo -n "Enter MySQL password: "
-read -s PASSWD; echo
-done
+
+if [ "$MB_ID" != "" ]
+then
+	DATABASE="mb_$MB_ID"
+	DBUSER="mb_$MB_ID"
+fi
 
 echo
 echo -n "Add apt.cppcms.com to sources and apt-get update... "
@@ -61,11 +65,16 @@ make install || exit 1
 echo
 
 echo "Configure MySQL."
-cd ../model
-echo "CREATE DATABASE IF NOT EXISTS mb" >  mysql_ready.sql
-cat mysql.sql > mysql_ready.sql
+cd ../model &&
+echo "GRANT USAGE ON *.* TO '$DBUSER'@'localhost';
+DROP USER '$DBUSER'@'localhost';
+CREATE DATABASE IF NOT EXISTS $DATABASE; USE '$DATABASE';
+CREATE USER '$DBUSER'@'localhost' IDENTIFIED BY '$PASSWD';
+GRANT ALL PRIVILEGES ON $DATABASE . * TO '$DBUSER'@'localhost';
+FLUSH PRIVILEGES;" >  mysql_ready.sql &&
+cat mysql.sql >> mysql_ready.sql || (echo "Cannot create tmp sql file!" ; exit 1)
 echo -n "MySQL root passwd for create mb database: "
-mysql -u root -p mb < mysql_ready.sql
+mysql -u root -p < mysql_ready.sql || exit 1
 echo
 
 echo -n "Copy and enable site tamplate for nginx (port 8060 default)... "

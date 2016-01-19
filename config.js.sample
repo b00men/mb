@@ -13,7 +13,7 @@
                 },
                 // Choose your datebase type
                 //"connection_string" : "sqlite3:db=mb.db;@pool_size=10"
-                //"connection_string" : "mysql:database=name_of_datebase;user=user_of_datebase;password=password_of_database;@pool_size=10"
+                //"connection_string" : "mysql:database='name_of_datebase';user='user_of_datebase';password='password_of_database';@pool_size=10"
         },
         "service" : {
                 "api" : "fastcgi",
@@ -55,9 +55,8 @@
                         "domains" : [ "mb" ]
                 },
                 "locales" : [
-                		"ru_RU.UTF-8", 
+                        "ru_RU.UTF-8", 
                         "en_US.UTF-8"
                 ]
         }
 }
-
