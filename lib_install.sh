@@ -2,37 +2,42 @@
 function check_permission {
 	if [ `whoami` != "root" ]
 	then
-		echo You need to be root to perform this command.
+		echo "You need to be root to perform this script."
 		exit 1
 	fi
 }
 
 function set_var {
-	ARCH=`uname -r | sed 's/.*-//'`
-	MB_ID="-"
-	DEB_WEB="nginx spawn-fcgi"
-	DEB_DB="mysql-server libcppdb-mysql0"
-	DEB_BUILD="cmake g++ libcppcms-dev libcppdb-dev libboost-dev libmagick++-dev libboost-regex-dev gettext"
-	DATABASE="mb_default"
-	DBUSER="mb_default"
-	PASSWD=`date +%s | sha256sum | base64 | head -c 32`
-
 	echo
 	echo "This install script can create one or several sites on mb.
-	Compose message board id for current site.
+	Compose message board ID for current site.
 	ID can include alphabets, digs and must be less 32 chars.
 	Remember, if ID exist, config and database will be rewrited!"
 	echo
-	while [ "`echo $MB_ID | sed 's/[[:alnum:]]//g'`" != "" ]
+	MB_ID="-"
+	while [ "`echo $MB_ID | sed '/^[[:alnum:]]\{,32\}$/d'`" != "" ]
 	do
-	read -n32 -p "Message board ID or press [Enter] to default: " MB_ID
+	read -p "Enter mb ID or press [Enter] to default: " MB_ID
 	done
 
-	if [ "$MB_ID" != "" ]
+	if [ -z "$MB_ID" ]
 	then
-		DATABASE="mb_$MB_ID"
-		DBUSER="mb_$MB_ID"
+		MB_ID="default"
+		MB_PORT="8060"
+	else
+		while [ -z "`echo $MB_PORT | sed -n -e '/^[1-9][0-9]\{1,3\}$/p' -e '/^[1-3][0-9]\{4\}$/p' -e '/^4[0-9][0-1][0-5][0-1]$/p'`" ]
+		do
+		read -n32 -p "Enter mb port: " MB_PORT
+		done
 	fi
+
+	ARCH=`uname -r | sed 's/.*-//'`
+	DEB_WEB="nginx spawn-fcgi"
+	DEB_DB="mysql-server libcppdb-mysql0"
+	DEB_BUILD="cmake g++ libcppcms-dev libcppdb-dev libboost-dev libmagick++-dev libboost-regex-dev gettext"
+	DATABASE="mb_$MB_ID"
+	DBUSER="mb_$MB_ID"
+	PASSWD=`date +%s | sha256sum | base64 | head -c 32`
 }
 
 function install_depending {
@@ -88,8 +93,12 @@ function config_mysql {
 }
 
 function config_nginx {
-	echo -n "Copy and enable site tamplate for nginx (port 8060 default)... "
-	cp /usr/local/share/mb/message_board /etc/nginx/sites-available/message_board && ln -sf /etc/nginx/sites-available/message_board /etc/nginx/sites-enabled/message_board && echo done || exit 1
+	echo -n "Configure and enable site tamplate for nginx... "
+	cp /usr/local/share/mb/message_board /etc/nginx/sites-available/$DATABASE &&
+	ln -sf /etc/nginx/sites-available/$DATABASE /etc/nginx/sites-enabled/$DATABASE &&
+	sed -i "s/8060/$MB_PORT/g" /etc/nginx/sites-available/$DATABASE &&
+	sed -i "s/mb-fcgi\.sock/mb_$MB_ID-fcgi.sock/" /etc/nginx/sites-available/$DATABASE &&
+	echo done || exit 1
 	echo -n "Reload nginx... "
 	service nginx reload && echo done || exit 1
 	echo
@@ -98,32 +107,36 @@ function config_nginx {
 function config_mb {
 	echo "Configure message board."
 	echo -n "Create config file... "
-	cp /usr/local/share/mb/config.js.sample /usr/local/share/mb/config.js && echo done || exit 1
+	mkdir -p /etc/mb/conf.d &&
+	cp /usr/local/share/mb/config.js.sample /etc/mb/conf.d/$MB_ID && echo done || exit 1
 	echo -n "Generate cbc and hmac keys... "
-	cat /usr/local/share/mb/config.js | grep -B 1000 "\"hmac_key\"" | grep -v -e "\"hmac_key\"" -e "\"cbc_key\"" > /tmp/config.js &&
+	cat /etc/mb/conf.d/$MB_ID | grep -B 1000 "\"hmac_key\"" | grep -v -e "\"hmac_key\"" -e "\"cbc_key\"" > /tmp/config.js &&
 	cppcms_make_key --hmac sha1 --cbc aes | grep key >> /tmp/config.js &&
-	cat /usr/local/share/mb/config.js | grep -A 1000 "\"hmac_key\"" | grep -v -e "\"hmac_key\"" -e "\"cbc_key\"" >> /tmp/config.js &&
+	cat /etc/mb/conf.d/$MB_ID| grep -A 1000 "\"hmac_key\"" | grep -v -e "\"hmac_key\"" -e "\"cbc_key\"" >> /tmp/config.js &&
 	if [ "`cat /tmp/config.js | wc -l`" != 2 ]
 	then
-		cat /tmp/config.js > /usr/local/share/mb/config.js &&
+		cat /tmp/config.js > /etc/mb/conf.d/$MB_ID &&
 		rm /tmp/config.js && echo done || exit 1
 	else
-		echo "Not found hmac_key in /usr/local/share/mb/config.js! Aborted."
+		echo "Not found hmac_key in /etc/mb/conf.d/$MB_ID! Aborted."
 		exit 1
 	fi || exit 1
+	echo -n "Add to config fcgi sock file... "
+	sed -i "s/mb-fcgi\.sock/mb_$MB_ID-fcgi.sock/" /etc/mb/conf.d/$MB_ID && echo done || exit 1
 	echo -n "Add to config MySQL connection... "
-	sed -i -e "s/name_of_datebase/$DATABASE/" -e "s/user_of_datebase/$DBUSER/" -e "s/password_of_database/$PASSWD/" /usr/local/share/mb/config.js &&
-	sed -i 's/\/\/\"connection_string\" \: \"mysql/\"connection_string\" \: \"mysql/' /usr/local/share/mb/config.js &&
+	sed -i -e "s/name_of_datebase/$DATABASE/" -e "s/user_of_datebase/$DBUSER/" -e "s/password_of_database/$PASSWD/" /etc/mb/conf.d/$MB_ID &&
+	sed -i 's/\/\/\"connection_string\" \: \"mysql/\"connection_string\" \: \"mysql/' /etc/mb/conf.d/$MB_ID &&
 	echo done || exit 1
 }
 
 function config_mb_daemon {
 	echo
+
 }
 
 function run_and_epilogue {
 	echo "Message board successfull install and configure!"
-	echo -n "Message board start... "
-	.././mb-spawn-daemon start && echo done || exit 1
-	echo "Try http://localhost:8060 to connect"
+	echo -n "Message board start. "
+	.././mbd.sh start || exit 1
+	echo "Try http://localhost:$MB_PORT to connect"
 }
