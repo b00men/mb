@@ -7,6 +7,6 @@ install_depending
 build_and_install
 config_mysql
 config_nginx
-config_mb
 config_mb_daemon
+config_mb
 run_and_epilogue

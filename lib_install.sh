@@ -104,6 +104,11 @@ function config_nginx {
 	echo
 }
 
+function config_mb_daemon {
+	cp mb-daemon /etc/init.d/
+	systemctl enable mb-daemon
+}
+
 function config_mb {
 	echo "Configure message board."
 	echo -n "Create config file... "
@@ -129,14 +134,9 @@ function config_mb {
 	echo done || exit 1
 }
 
-function config_mb_daemon {
-	echo
-
-}
-
 function run_and_epilogue {
 	echo "Message board successfull install and configure!"
 	echo -n "Message board start. "
-	.././mbd.sh start || exit 1
+	service mb-daemon start || exit 1
 	echo "Try http://localhost:$MB_PORT to connect"
 }

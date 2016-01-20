@@ -15,23 +15,28 @@
 
 FCGI="/usr/bin/spawn-fcgi"
 MB="/usr/local/bin/mb"
-SOCK="/tmp/mb_$ID-fcgi.sock"
-PID="/var/run/mb_$ID.pid"
 CONFD="/etc/mb/conf.d"
 USER="www-data"
 
 test -x $FCGI || exit 0
 test -x $MB || exit 0
 	
+
+var_upd() {
+	SOCK="/tmp/mb_$ID-fcgi.sock"
+	PID="/var/run/mb_$ID.pid"
+}
+
 do_start() {
 	cd $CONFD
 	for ID in *; do
+		var_upd
 		if [ ! `echo $ID | sed -n '/^[[:alnum:]]\{,32\}$/p'` ];
 		then log_failure_msg "Incorrect config filename \"$CONFD/$ID\""
 		else
 			log_daemon_msg "Starting mb" "$ID"
 			start-stop-daemon --start --quiet -p $PID --exec $MB --test &&
-			$FCGI -P $PID -u $USER -g $USER -s $SOCK -- $MB -c $CONFD/$ID > /dev/null
+			start-stop-daemon --start --exec $FCGI -- -P $PID -u $USER -g $USER -s $SOCK -- $MB -c $CONFD/$ID > /dev/null
 			RETVAL=$?
 			[ $RETVAL -lt 2 ] && log_end_msg 0 || log_end_msg 1
 		fi
@@ -41,6 +46,7 @@ do_start() {
 do_stop() {
 	cd $CONFD
 	for ID in *; do
+		var_upd
 		if [ ! `echo $ID | sed -n '/^[[:alnum:]]\{,32\}$/p'` ];
 		then log_failure_msg "Incorrect config filename \"$CONFD/$ID\""
 		else
@@ -56,6 +62,7 @@ do_stop() {
 status() {
 	cd $CONFD
 	for ID in *; do
+		var_upd
 		if [ ! `echo $ID | sed -n '/^[[:alnum:]]\{,32\}$/p'` ];
 		then log_failure_msg "Incorrect config filename \"$CONFD/$ID\""
 		else status_of_proc -p $PID $MB "Process mb: $ID"
