@@ -1,0 +1,20 @@
+svn co https://svn.code.sf.net/p/cppcms/code/framework/trunk cppcms
+tar -xjf cppcms_boost.tar.bz2
+
+deb http://apt.cppcms.com/ wheezy main  
+deb-src http://apt.cppcms.com/ wheezy main 
+
+
+sudo apt-get install cmake libicu-dev libpcre3-dev zlib1g-dev
+sudo apt-cache search msgfmt
+sudo apt-get install libboost-dev libboost-regex-dev libmagick++-dev gettext
+
+!!!!! UPGRADE TO SID
+
+sudo insserv -r nfs-kernel-server ##remove warning
+
+sudo apt-get install libcppdb0 libcppdb-mysql0
+sudo apt-get install spawn-fcgi
+touch /tmp/mb-fcgi.sock with chmod 777
+
+sudo apt-get install libcppdb-dev
