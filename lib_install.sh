@@ -57,11 +57,11 @@ function install_depending {
 			*		) echo "Please install libgcrypt11 and libicu48 manually, then run this script again." && exit 1;;
 		esac
 		echo -n "Download libgcrypt11 and libicu48... "
-		if wget -q http://ftp.fr.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u4_$ARCH.deb && wget -q http://ftp.fr.debian.org/debian/pool/main/i/icu/libicu48_4.8.1.1-12+deb7u4_$ARCH.deb && echo done || exit 1
+		if wget -q http://ftp.fr.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u4_$ARCH.deb && wget -q http://security.debian.org/debian-security/pool/updates/main/i/icu/libicu48_4.8.1.1-12+deb7u4_$ARCH.deb && echo done || exit 1
 		then
 			echo
 			echo "Manual install libgcrypt11 and libicu48:"
-			dpkg -i libgcrypt11_1.5.0-5+deb7u3_$ARCH.deb libicu48_4.8.1.1-12+deb7u3_$ARCH.deb || exit 1
+			dpkg -i libgcrypt11_1.5.0-5+deb7u4_$ARCH.deb libicu48_4.8.1.1-12+deb7u4_$ARCH.deb || exit 1
 			echo
 		fi
 	fi
