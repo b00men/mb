@@ -31,7 +31,6 @@ function set_var {
 		done
 	fi
 
-	ARCH=`uname -r | sed 's/.*-//'`
 	DEB_WEB="nginx spawn-fcgi"
 	DEB_DB="mysql-server libcppdb-mysql0"
 	DEB_BUILD="cmake g++ libcppcms-dev libcppdb-dev libboost-dev libmagick++-dev libboost-regex-dev gettext"
@@ -52,6 +51,11 @@ function install_depending {
 	    #echo "Libgcrypt11 and libicu48 avalible in repo or already install"
 		DEB_ibgcrypt_libicu="libgcrypt11 libicu48"
 	else
+		case $(arch) in
+			i[0-9]86	) ARCH="i386";;
+			x86_64		) ARCH="amd64";;
+			*		) echo "Please install libgcrypt11 and libicu48 manually, then run this script again." && exit 1;;
+		esac
 		echo -n "Download libgcrypt11 and libicu48... "
 		if wget -q http://ftp.fr.debian.org/debian/pool/main/libg/libgcrypt11/libgcrypt11_1.5.0-5+deb7u3_$ARCH.deb && wget -q http://ftp.fr.debian.org/debian/pool/main/i/icu/libicu48_4.8.1.1-12+deb7u3_$ARCH.deb && echo done || exit 1
 		then
