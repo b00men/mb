@@ -1,5 +1,6 @@
 # message board
 mb is a message board on cppcms
+Required debian jessie or later
 
 ### Installation
 
